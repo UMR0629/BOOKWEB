@@ -138,3 +138,11 @@ except ImportError:  # 捕获导入异常
     pass
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+EMAIL_HOST = "smtp.sjtu.edu.cn"
+EMAIL_PORT = 25 
+EMAIL_HOST_USER = "masiyuan0228"     
+EMAIL_HOST_PASSWORD = "Msy513504613."     # JAccount密码
+EMAIL_USE_TLS = True 
+EMAIL_FROM = "masiyuan0228@sjtu.edu.cn"  # JAccount邮箱地址
+EMAIL_TITLE = '邮箱激活'
