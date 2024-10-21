@@ -6,7 +6,7 @@ from django.conf import settings
 from UserAuth.utils.validators import is_valid_email
 
 
-def check_code(width=120, height=30, char_length=5, font_file='Monaco.ttf', font_size=28):
+def check_code(width=120, height=30, char_length=5, font_file='MONACO.ttf', font_size=25):
     code = []
     img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
     draw = ImageDraw.Draw(img, mode='RGB')
