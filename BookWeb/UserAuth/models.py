@@ -28,8 +28,9 @@ class User(models.Model):
     edu_ground = models.CharField(verbose_name="学历", max_length=30, blank=True)
     school = models.CharField(verbose_name="学校", max_length=30, blank=True)
     major = models.CharField(verbose_name="专业", max_length=30, blank=True)
-    excepting_position = models.CharField(verbose_name="意向职位", max_length=30, blank=True)
-    excepting_location = models.CharField(verbose_name="意向地点", max_length=30, blank=True)
+    my_love_book = models.CharField(verbose_name="最喜爱的书籍", max_length=30, blank=True)
+    my_love_author = models.CharField(verbose_name="最喜爱的作者", max_length=30, blank=True)
+    maxim = models.CharField(verbose_name="格言", max_length=30, blank=True)
 
     def __str__(self):
         return self.username

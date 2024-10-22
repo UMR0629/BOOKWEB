@@ -237,8 +237,8 @@ def index(request):
 
 
 def logout(request):
-    request.session.clear()
-    return redirect("/")
+    request.session.clear() 
+    return redirect("/auth/login/")
 
 
 def check_login_state(request):
