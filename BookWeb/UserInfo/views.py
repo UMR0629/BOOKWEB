@@ -58,7 +58,7 @@ def index(request, pk):
         'scroll_to_bottom': show_topic_page,
         'is_hr': is_hr,
     }
-
+    '''
     if is_hr:
         position_per_page = 6
         position = obj.positions.filter(published_state=1)
@@ -77,7 +77,8 @@ def index(request, pk):
         user_info['show_position'] = show_position_page
 
     return render(request, "UserInfo/index.html", context=user_info)
-
+    '''
+    return render(request, "UserInfo/index.html", context=user_info)
 
 def resume(request):
     # 查询当前用户的所有简历
