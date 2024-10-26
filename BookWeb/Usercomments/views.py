@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Review
 from django.urls import reverse
 from .forms import ReviewForm,BookForm,BookReviewForm
+from django.http import HttpResponse, Http404
+import statistics
 # Create your views here.
 
 def book_review(request, book_id):
@@ -15,7 +17,7 @@ def book_review(request, book_id):
             review.book = book
             review.save()
             # 更新书籍的平均评分和总评分人数
-            book.average_rating = book.reviews.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
+            book.average_rating = book.reviews.aggregate(avg_rating=statistics.mean('rating'))['avg_rating'] or 0
             book.total_numbers = book.reviews.count()
             book.save()
             return redirect('comments:book_review', book.id)

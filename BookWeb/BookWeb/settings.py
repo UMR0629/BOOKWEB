@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'UserAuth',
     'Forum',
     "UserInfo",
+    "Usercomments",
     
 ]
 

@@ -26,4 +26,5 @@ urlpatterns = [
     path("auth/", include("UserAuth.urls")),
     path("", include('Forum.urls')),
     path("info/", include("UserInfo.urls")),
+    path("Usercomments/", include("Usercomments.urls")),
 ]
