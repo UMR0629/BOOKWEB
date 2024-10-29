@@ -5,56 +5,95 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-       
+        
             .container {
-                width: 80%;
-                margin: auto;
-                overflow: hidden;
+                width: 60%;               
+                overflow: hidden; 
+                background-color: #ffcc00;
+                background-image: url("图书馆.jpeg");
+	            background-attachment: fixed;
+	            background-size: cover
             }
-            h1 {
-                background-color: #007bff; /* 浅蓝色背景 */
-                color: #fff; /* 白色字体 */
-                text-align: center;
-                padding: 20px 0;
-            }
-            
-          
-        
-        
-        
+                   
         .no-results {
             color: red;
             margin-top: 10px;
+        }
+        .button-container {  
+            display: flex;  
+            justify-content: center; /* 水平居中 */  
+                         
+        }  
+          
+        /* 为按钮自定义样式 */  
+        .add-button {  
+            background-color: #17a2b8;       
+            color: white;
+            border: 1px solid #17a2b8;            
+            width: 600px;                  
+            height: 50px;                  
+            font-size: 8;                 
+            cursor: pointer;            
+        } 
+        .point-button{
+            background-color: #993333;       
+            color: white;            
+            width: 100px;                  
+            height: 40px;                  
+            font-size: 8;                 
+            cursor: pointer; 
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');  
+        h1 {  
+            text-align: center;
+            font-family: 'Lobster', cursive;  
+            font-size: 5em;  
+            color: #993333;  
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);  
         }
     </style>
 {%endblock%}
 {% block content %}
 
-    <div style="border-radius: 10px;" class="mt-4 p-4 bg-light">
-        <h1>书籍清单</h1>
+    <div style="border-radius: 5px; " class="mt-4 p-4 mb-5 me-1 ms-1 bg-light">
+        <h1>书 籍 展 会</h1>
         <form action="." method="get">
-            <input type="text" name="search" placeholder="搜索书名...">
-            <button class="btn btn-primary custom-button" type="submit"><i class="fas fa-search"></i></button>
-            <a href="{% url 'Usercomments:add_book' %}" class="btn btn-primary custom-button">添加书籍</a>
+            <div class="button-container"> 
+               <input style="margin-right: 10px;" type="text" name="search" placeholder="搜索书名...">
+               <button class="btn btn-primary custom-button" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+            
         </form>
         {% if books %}
             <ul>
                 {% for book in books %}
-                <li>  
-                    <h2>{{book.title}}</h2>
-                    <p>作者：{{book.author}}</p>
-                    <p>平均评分: {{ book.average_rating }}</p>
-                    <p>评分人数: {{ book.total_numbers }}</p>
-                    <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>       
+                <p style="color: #66CCFF;">-----------------------------------------------------------------------------------------------------------------</p> 
+                <li> 
+                <div class="row col-md-12" style="margin-top: 20px; margin-bottom: 20px;">
+                    <span class="step-links">
+                    <h2 style="color: #66CCFF;">{{book.title}}</h2>
+                    <span style="margin-right: 30px;font-size: 25px;">
+                        平均评分: {{ book.average_rating }} 
+                    </span>
+                    <span style="margin-right: 30px;font-size: 25px;"> 
+                        评分人数: {{ book.total_numbers }}
+                    </span>
+                    
+                    <button class="btn btn-primary point-button" onclick="window.location.href='{% url 'Usercomments:book_review' book.id %}'; return false;">我要评分</button>
+                   
+                    </span>
+                </div>
                 </li>
                 {% endfor %}
+                <p style="color: #66CCFF;">-----------------------------------------------------------------------------------------------------------------</p>  
+                <div class="button-container"> 
+                   <button class="btn btn-primary add-button" onclick="window.location.href='{% url "Usercomments:add_book" %}'; return false;">添加书籍</button>
+                </div>
             </ul>
         {% else %}
             <p class="no-results">没有此书，请添加书籍</p>
-            <a href="{% url 'Usercomments:add_book' %}">添加书籍</a>...
             
         {% endif %}
     </div>
