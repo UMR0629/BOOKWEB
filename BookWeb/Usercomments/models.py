@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 class Book(models.Model):
     title = models.CharField(max_length=200)  # 书名
+    author = models.CharField(max_length=10,default='Unknown')  #作者
     average_rating = models.FloatField(default = 0.0)     # 平均评分
     total_numbers = models.IntegerField(default = 0)    # 总评分人数
 

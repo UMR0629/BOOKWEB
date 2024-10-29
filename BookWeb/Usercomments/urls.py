@@ -2,7 +2,7 @@ from django.urls import path
 from .views import book_list,add_book,book_review
 from .import views
 
-app_name = 'comments'
+app_name = 'Usercomments'
 
 urlpatterns = [
     path('', book_list, name='book_list'),

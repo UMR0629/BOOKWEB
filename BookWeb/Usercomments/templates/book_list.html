@@ -38,22 +38,23 @@
         <form action="." method="get">
             <input type="text" name="search" placeholder="搜索书名...">
             <button class="btn btn-primary custom-button" type="submit"><i class="fas fa-search"></i></button>
-            <button class="btn btn-primary custom-button" onclick="window.location.href='{% url "comments:add_book" %}'; return false;">添加书籍</button>
-
+            <a href="{% url 'Usercomments:add_book' %}" class="btn btn-primary custom-button">添加书籍</a>
         </form>
         {% if books %}
             <ul>
                 {% for book in books %}
                 <li>  
                     <h2>{{book.title}}</h2>
+                    <p>作者：{{book.author}}</p>
                     <p>平均评分: {{ book.average_rating }}</p>
                     <p>评分人数: {{ book.total_numbers }}</p>
-                    <a href="{% url 'comments:book_review' book.id %}">评分</a>       
+                    <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>       
                 </li>
                 {% endfor %}
             </ul>
         {% else %}
             <p class="no-results">没有此书，请添加书籍</p>
+            <a href="{% url 'Usercomments:add_book' %}">添加书籍</a>...
             
         {% endif %}
     </div>

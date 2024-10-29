@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Review
 from django.urls import reverse
+from django.db.models import Avg
+from statistics import mean
 from .forms import ReviewForm,BookForm,BookReviewForm
 from django.http import HttpResponse, Http404
 import statistics
@@ -17,10 +19,14 @@ def book_review(request, book_id):
             review.book = book
             review.save()
             # 更新书籍的平均评分和总评分人数
-            book.average_rating = book.reviews.aggregate(avg_rating=statistics.mean('rating'))['avg_rating'] or 0
+            ratings = [r.rating for r in book.reviews.all()]  # 获取所有评分
+            if ratings:  # 确保有评分
+                book.average_rating = statistics.mean(ratings)  # 计算平均评分
+            else:
+                book.average_rating = 0.0  # 如果没有评分，设置为 0
             book.total_numbers = book.reviews.count()
             book.save()
-            return redirect('comments:book_review', book.id)
+            return redirect('Usercomments:book_list')
     else:
         form = ReviewForm()
 
@@ -33,6 +39,7 @@ def book_review(request, book_id):
 def add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
+        author = request.POST.get('author','Unknown')
         rating_str = request.POST.get('rating')
         comment = request.POST.get('comment')
         try:
@@ -42,16 +49,19 @@ def add_book(request):
             return HttpResponse("评分必须是有效的数字。", status=400)
 
         if title and rating and comment:
-            book, created = Book.objects.get_or_create(title=title)
+            book, created = Book.objects.get_or_create(title=title,defaults={'author':author})
             if created:
+                #book.author = author #初始作者姓名
                 book.average_rating = rating  # 初始评分
                 book.total_numbers = 1  # 初始评分人数
             else:
+                if book.author == 'Unknown' and author :
+                    book.author = author
                 book.total_numbers += 1
                 book.average_rating = ((book.average_rating * (book.total_numbers - 1)) + rating) / book.total_numbers
             book.save()
             Review.objects.create(book=book, rating=float(rating), comment=comment)
-            return redirect('comments:book_list')  # 重定向到书籍列表页面
+            return redirect('Usercomments:book_list')  # 重定向到书籍列表页面
     else:
         return render(request, 'add_book.html')
 
