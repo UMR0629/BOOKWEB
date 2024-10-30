@@ -1,11 +1,15 @@
+import os
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Review
 from django.urls import reverse
 from django.db.models import Avg
 from statistics import mean
+from django.core.files.images import ImageFile
 from .forms import ReviewForm,BookForm,BookReviewForm
 from django.http import HttpResponse, Http404
 import statistics
+
 # Create your views here.
 
 def book_review(request, book_id):
@@ -42,6 +46,7 @@ def add_book(request):
         author = request.POST.get('author','Unknown')
         rating_str = request.POST.get('rating')
         comment = request.POST.get('comment')
+        image = request.FILES.get('image')
         try:
             rating = float(rating_str)
         except (ValueError, TypeError):
@@ -50,13 +55,17 @@ def add_book(request):
 
         if title and rating and comment:
             book, created = Book.objects.get_or_create(title=title,defaults={'author':author})
+            if not created and book.author == 'Unknown' and author:
+                book.author = author
+            if image:
+                book.image = image  # 更新图片字段
             if created:
-                #book.author = author #初始作者姓名
+                #book.author = author #初始作者姓名}
                 book.average_rating = rating  # 初始评分
                 book.total_numbers = 1  # 初始评分人数
             else:
-                if book.author == 'Unknown' and author :
-                    book.author = author
+                if image and not book.image: # 只有当书籍没有图片时才更新图片
+                    book.image.save(image.name,ImageField(image))
                 book.total_numbers += 1
                 book.average_rating = ((book.average_rating * (book.total_numbers - 1)) + rating) / book.total_numbers
             book.save()
@@ -71,4 +80,10 @@ def book_list(request):
     if 'search' in request.GET:
         search_query = request.GET['search']
         books = Book.objects.filter(title__icontains=search_query)
+    default_image_path = 'book_images/default.jpg'
+    for book in books:
+        if not book.image:
+            default_image = open(os.path.join(settings.MEDIA_ROOT, default_image_path), 'rb')
+            book.image.save(default_image_path, ImageFile(default_image))
+            book.save()
     return render(request, 'book_list.html', {'books': books})

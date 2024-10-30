@@ -57,7 +57,7 @@
     <div class="container">
         <h1>添加书籍和评论</h1>
         <!-- 书籍添加表单 -->
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="title">书名：</label>
             <input type="text" id="title" name="title" required><br>
@@ -67,6 +67,8 @@
             <input type="number" id="rating" step="0.01" name="rating" required><br>
             <label for="comment">理由：</label>
             <textarea id="comment" name="comment" required></textarea><br>
+            <label for="image">图片（可选）：</label>
+            <input type="file" id="image" name="image"><br> 
             <input type="submit" value="提交">
         </form>
     </div>

@@ -4,58 +4,125 @@
 {% block title %}书籍清单{% endblock %}
 
 {% block stylesheet %}
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .search-form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .search-form input[type="text"] {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        flex-grow: 1;
+    }
+    .search-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .search-form button:hover {
+        background-color: #0056b3;
+    }
+    .search-form a {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .search-form a:hover {
+        background-color: #218838;
+    }
+    .book-list {
+        list-style: none;
+        padding: 0;
+    }
+    .book-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .book-list img {
+        width: 150px; /* 增大图片尺寸 */
+        height: auto;
+        margin-right: 20px;
+        border-radius: 4px;
+    }
+    .book-info h2 {
+        margin: 0 0 5px 0;
+        color: #343a40;
+        font-size: 1.25rem; /* 适当调小书籍名称 */
+    }
+    .book-info p {
+        margin: 0 0 5px 0;
+        color: #6c757d;
+    }
+    .no-results {
+        color: #dc3545;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
 
-
-    <style>
-       
-            .container {
-                width: 80%;
-                margin: auto;
-                overflow: hidden;
-            }
-            h1 {
-                background-color: #007bff; /* 浅蓝色背景 */
-                color: #fff; /* 白色字体 */
-                text-align: center;
-                padding: 20px 0;
-            }
-            
-          
-        
-        
-        
-        .no-results {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
-{%endblock%}
 {% block content %}
-
-    <div style="border-radius: 10px;" class="mt-4 p-4 bg-light">
-        <h1>书籍清单</h1>
+<div class="container">
+    <h1>书籍清单</h1>
+    <div class="search-form">
         <form action="." method="get">
             <input type="text" name="search" placeholder="搜索书名...">
-            <button class="btn btn-primary custom-button" type="submit"><i class="fas fa-search"></i></button>
-            <a href="{% url 'Usercomments:add_book' %}" class="btn btn-primary custom-button">添加书籍</a>
+            <button type="submit" class="btn btn-primary custom-button"><i class="bi bi-search"></i>搜索</button>
         </form>
-        {% if books %}
-            <ul>
-                {% for book in books %}
-                <li>  
-                    <h2>{{book.title}}</h2>
-                    <p>作者：{{book.author}}</p>
+        <a href="{% url 'Usercomments:add_book' %}" class="btn btn-success custom-button">添加书籍</a>
+    </div>
+    {% if books %}
+        <ul class="book-list">
+            {% for book in books %}
+            <li>
+                {% if book.image %}
+                <img src="{{ book.image.url }}" alt="Book Image">
+                {% else %}
+                <img src="{{ MEDIA_URL }}book_images/default.jpg" alt="Default Book Image">
+                {% endif %}
+                <div class="book-info">
+                    <h2>{{ book.title }}</h2>
+                    <p>作者：{{ book.author }}</p>
                     <p>平均评分: {{ book.average_rating }}</p>
                     <p>评分人数: {{ book.total_numbers }}</p>
-                    <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>       
-                </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="no-results">没有此书，请添加书籍</p>
-            <a href="{% url 'Usercomments:add_book' %}">添加书籍</a>...
-            
-        {% endif %}
-    </div>
+                    <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-results">没有此书，请添加书籍</p>
+        <a href="{% url 'Usercomments:add_book' %}">添加书籍</a>...
+    {% endif %}
+</div>
 {% endblock %}

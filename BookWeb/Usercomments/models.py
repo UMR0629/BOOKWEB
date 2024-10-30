@@ -6,6 +6,7 @@ class Book(models.Model):
     author = models.CharField(max_length=10,default='Unknown')  #作者
     average_rating = models.FloatField(default = 0.0)     # 平均评分
     total_numbers = models.IntegerField(default = 0)    # 总评分人数
+    image = models.ImageField(upload_to = 'book_images/',default = 'default.jpg',blank=True,null=True)
 
     def __str__(self):
         return self.title

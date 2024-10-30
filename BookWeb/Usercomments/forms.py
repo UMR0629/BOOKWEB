@@ -13,7 +13,7 @@ class ReviewForm(forms.ModelForm):
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ['title','author', 'average_rating','total_numbers']
+        fields = ['title','author', 'average_rating','total_numbers','image']
 
 class BookReviewForm(forms.Form):
     title = forms.CharField(max_length=200, label='书名')
