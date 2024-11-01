@@ -44,8 +44,8 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
         self.request = request
 
     def clean_username(self):
-        if not is_username_valid(self.cleaned_data['username']):
-            raise ValidationError("用户名不允许存在特殊字符")
+        #if not is_username_valid(self.cleaned_data['username']):
+            #raise ValidationError("用户名不允许存在特殊字符")
         if models.User.objects.filter(username=self.cleaned_data["username"]).exists():
             raise ValidationError("用户名已存在")
         return self.cleaned_data['username']

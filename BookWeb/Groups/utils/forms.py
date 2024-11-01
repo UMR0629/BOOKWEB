@@ -58,8 +58,8 @@ class CreateForm(BootStrapForm, forms.ModelForm):
         self.request = request
 
     def clean_villagename(self):
-        if not is_name_valid(self.cleaned_data['villagename']):
-            raise ValidationError("村名不允许存在特殊字符")
+        #if not is_name_valid(self.cleaned_data['villagename']):
+            #raise ValidationError("村名不允许存在特殊字符")
         if models.User.objects.filter(username=self.cleaned_data["villagename"]).exists():
             raise ValidationError("村名已存在")
         return self.cleaned_data['villagename']
