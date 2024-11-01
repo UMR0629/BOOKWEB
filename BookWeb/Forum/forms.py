@@ -1,5 +1,5 @@
 from django import forms
-from .models import Topic, Post
+from .models import Topic, Post, GTopic, GPost
 
 
 class NewTopicForm(forms.ModelForm):
@@ -23,9 +23,35 @@ class NewTopicForm(forms.ModelForm):
         model = Topic
         fields = ['subject', 'message']
 
+class NewGTopicForm(forms.ModelForm):
+
+    subject = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': '输入标题'}
+        ),
+        label='标题',
+    )
+
+    message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={'rows': 5, 'placeholder': '输入内容'}
+        ),
+        max_length=4000,
+        label='内容',
+    )
+
+    class Meta:
+        model = GTopic
+        fields = ['subject', 'message']
 
 class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
+        fields = ['message', ]
+
+class GPostForm(forms.ModelForm):
+
+    class Meta:
+        model = GPost
         fields = ['message', ]

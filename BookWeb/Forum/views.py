@@ -4,8 +4,9 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
 
 from UserAuth.models import User
-from .models import Topic, Post
-from .forms import NewTopicForm, PostForm
+from Groups.models import Village
+from .models import Topic, Post, GTopic, GPost
+from .forms import NewTopicForm, PostForm, NewGTopicForm, GPostForm
 
 import re
 import os
@@ -99,3 +100,88 @@ def reply_topic(request, pk):
     else:
         form = PostForm()
     return render(request, 'Forum/reply_topic.html', {'topic': topic, 'form': form})
+
+
+def Ghome(request,gpk):
+    gtmp_id=gpk
+    #print(gpk)
+    #print(tmp_id)
+    query_set = Village.objects.filter(id=gpk)
+    obj=query_set.first()
+    Gtopics = obj.gtopics.order_by('last_updated') 
+    
+    Gtopics_per_page = 20
+    paginator = Paginator(Gtopics, Gtopics_per_page)
+    page_number = request.GET.get('page')
+
+    try:
+        current_page = paginator.get_page(page_number)
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+    tmp_id=request.session['UserInfo'].get("id")
+    user_query=User.objects.filter(id=tmp_id)
+    user=user_query.first()
+    identity=0
+    if(obj.admin.username==user.username):
+        identity=1
+    context = {
+        'matching_files': get_matching_files(request),
+        'topics': current_page,
+        'page_size': Gtopics_per_page,
+        'identity':identity,
+        'gid':gtmp_id
+    }
+    #print(gtmp_id)
+    return render(request, 'Forum/ghome.html', context)
+
+def new_gtopic(request):
+    if request.method == 'POST':
+        form = NewGTopicForm(request.POST)   # check whether the form function needs to be changed
+        if form.is_valid():
+            gtopic = form.save(commit=False)
+            gtopic.group = Village.objects.get(pk=request.session['GroupInfo'].get('id'))
+            gtopic.starter = User.objects.get(pk=request.session['UserInfo'].get('id'))
+            gtopic.save()
+            post = GPost.objects.create(
+                message=form.cleaned_data.get('message'),
+                topic=gtopic,
+                created_by=gtopic.starter
+            )
+            return redirect('Forum:group_posts', pk=gtopic.pk)
+
+    else:
+        form = NewGTopicForm()
+
+    context = {
+        'form': form,
+        'matching_files': get_matching_files(request),
+    }
+    return render(request, 'Forum/new_gtopic.html', context)   #I think zhelibuyonggai
+
+
+def gtopic_posts(request, pk):
+    gtopic = get_object_or_404(GTopic, pk=pk)
+    gtopic.views += 1
+    gtopic.save()
+
+    context = {
+        'topic': gtopic,
+        'matching_files': get_matching_files(request),
+    }
+
+    return render(request, 'Forum/gtopic_posts.html', context)
+
+
+def reply_gtopic(request, pk):
+    gtopic = get_object_or_404(GTopic, pk=pk)
+    if request.method == 'POST':
+        form = GPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.topic = gtopic
+            post.created_by = User.objects.get(pk=request.session['UserInfo'].get('id'))
+            post.save()
+            return redirect('Forum:group_posts', pk=pk)
+    else:
+        form = PostForm()
+    return render(request, 'Forum/reply_topic.html', {'topic': gtopic, 'form': form})

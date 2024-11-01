@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static humanize static_tags %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<style>
+
+    .topic-card:hover{
+        color: #17a2b8 !important;
+        font-weight: bold;
+    }
+
+    .page-button {
+        background-color: rgba(229, 229, 229, 0.5);
+        color: black;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 7px;
+        padding-right: 7px;
+        border-radius: 3px;
+        font-size: 15px;
+        font-weight: bold;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .page-button:hover {
+        color: #17a2b8;
+    }
+
+    .current-page{
+        background-color: #17a2b8;
+        color: white;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 9px;
+        padding-right: 9px;
+        border-radius: 3px;
+        font-size: 15px;
+        font-weight: bold;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}  
+<div style="border-radius: 10px; margin-bottom: 50px;" class="mt-4 p-4 bg-light">  
+    <div>  
+        <div class="mb-4">  
+            <a href="{% url 'Groups:group' gid%}" class="btn btn-primary custom-button"></i>删除成功</a>  
+        </div>  
+    </div>  
+</div>  
+  
+{% endblock %}

@@ -27,4 +27,6 @@ urlpatterns = [
     path("", include('Forum.urls')),
     path("info/", include("UserInfo.urls")),
     path("Usercomments/", include(("Usercomments.urls",'Usercomments'), namespace='Usercomments')),
+    path("group/",include("Groups.urls")),
+    path("apply/",include("Apply.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
