@@ -10,9 +10,15 @@ from .forms import ReviewForm,BookForm,BookReviewForm
 from django.http import HttpResponse, Http404
 import statistics
 
+import re
+from UserAuth.utils.generateCode import send_sms_code
+from UserAuth.utils import validators
+from UserAuth.models import User
+from UserInfo.models import Resume
 # Create your views here.
 
 def book_review(request, book_id):
+    user_name = request.session['UserInfo'].get("username")  
     book = get_object_or_404(Book, pk=book_id)
     reviews = book.reviews.all()
     form = None
@@ -21,6 +27,7 @@ def book_review(request, book_id):
         if form.is_valid():
             review = form.save(commit=False)
             review.book = book
+            review.commenter = user_name
             review.save()
             # 更新书籍的平均评分和总评分人数
             ratings = [r.rating for r in book.reviews.all()]  # 获取所有评分
@@ -65,7 +72,7 @@ def add_book(request):
                 book.total_numbers = 1  # 初始评分人数
             else:
                 if image and not book.image: # 只有当书籍没有图片时才更新图片
-                    book.image.save(image.name,ImageField(image))
+                    book.image.save(image.name,ImageFile(image))
                 book.total_numbers += 1
                 book.average_rating = ((book.average_rating * (book.total_numbers - 1)) + rating) / book.total_numbers
             book.save()

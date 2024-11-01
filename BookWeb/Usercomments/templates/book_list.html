@@ -8,23 +8,28 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     body {
         font-family: 'Arial', sans-serif;
     }
     .container {
         width: 80%;
-        margin: 20px auto;
-        padding: 20px;
+        margin: 10px auto;
+        padding: 10px;
         background-color: #f8f9fa;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    h1 {
-        color: #007bff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');  
+        h1 {  
+            text-align: center;
+            font-family: 'Lobster', cursive;  
+            font-size: 5em;  
+            color: #007bff;  
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);  
+        }
     .search-form {
         display: flex;
         justify-content: space-between;
@@ -39,7 +44,7 @@
     }
     .search-form button {
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #17a2b8;
         color: white;
         border: none;
         border-radius: 4px;
@@ -104,6 +109,8 @@
     {% if books %}
         <ul class="book-list">
             {% for book in books %}
+            <div class="p-2 topic-card"
+             style="{% if forloop.first %}border-top: 1px solid #17a2b8;{% else %}border-top: 1px solid #dddddd;{% endif %}{% if forloop.last %}border-bottom: 1px solid #17a2b8;{% endif %}">
             <li>
                 {% if book.image %}
                 <img src="{{ book.image.url }}" alt="Book Image">
@@ -118,6 +125,7 @@
                     <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>
                 </div>
             </li>
+            </div>
             {% endfor %}
         </ul>
     {% else %}

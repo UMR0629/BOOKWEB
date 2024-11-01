@@ -25,10 +25,7 @@
                     <legend>修改账号信息</legend>
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <p>当前用户登陆身份：{{ data_dict.identity }}</p>
-                        <a href="/auth/changeidentity/" class="btn btn-primary custom-button">切换身份</a>
-                    </div>
+                    
 
                     <div class="mb-3">
                         <label for="username" class="form-label">用户名</label>
@@ -67,7 +64,7 @@
                     </div>
 
                     <button type="button" id="sendemail" class="btn btn-primary custom-button">发送验证码</button>
-
+                    
                     <button type="submit" class="btn btn-primary custom-button">提交</button>
                 </fieldset>
             </form>
@@ -75,65 +72,89 @@
     </div>
 {% endblock %}
 
-{% block js %}
-<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-<script type="text/javascript">
-    const interval = 30;
-    let countdown = interval;
-    let button = document.getElementById('sendemail');
-    let timer;
-
-    function updateButtonText() {
-        button.innerText = '剩余时间: ' + countdown + ' 秒';
-    }
-
-
-    function countdownTick() {
-        countdown--;
-        updateButtonText(button);
-
-        if (countdown <= 0) {
-            clearInterval(timer);
-            button.innerText = '发送验证码';
-            button.disabled = false;
-            button.className = 'btn btn-primary';
-        }
-    }
-
-    // 使用 JavaScript 事件处理监听按钮点击事件
-    document.getElementById('sendemail').addEventListener('click', function () {
-        //防止按钮再被点击
-        button.disabled = true;
-        countdown = interval;
-        button.className = 'btn btn-secondary';
-        //启动倒计时
-        timer = setInterval(countdownTick, 1000);
-        let email_address = document.getElementById("email").value
-        //发送请求
-        $.ajax({
-            url: '/info/sendemail/',
-            type: 'POST',
-            data: {
-                'new_email_address': email_address,
-            },
-            dataType: 'JSON',
-            success: (
-                function (res) {
-                    if (res['state']) {
-                        // state = true
-                        alert(res['msg']);
-                    } else {
-                        // state = false
-                        alert(res['msg']);
-                        clearInterval(timer);
-                        button.innerText = '发送验证码';
-                        button.disabled = false;
-                        button.className = 'btn btn-primary';
-                    }
-                }
-            )
-        })
-
-    });
-</script>
-{% endblock%}
+{% block js %}  
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>  
+<script type="text/javascript">  
+    const interval = 30;  
+    let countdown = interval;  
+    let button = document.getElementById('sendemail');  
+    let timer;  
+  
+    function updateButtonText() {  
+        button.innerText = '剩余时间: ' + countdown + ' 秒';  
+    }  
+  
+    function countdownTick() {  
+        countdown--;  
+        updateButtonText(); // 不需要传递button参数  
+  
+        if (countdown <= 0) {  
+            clearInterval(timer);  
+            resetButton();  
+        }  
+    }  
+  
+    function resetButton() {  
+        button.innerText = '发送验证码';  
+        button.disabled = false;  
+        button.className = 'btn btn-primary';  
+    }  
+  
+    // 获取CSRF令牌  
+    function getCookie(name) {  
+        let cookieValue = null;  
+        if (document.cookie && document.cookie !== '') {  
+            let cookies = document.cookie.split(';');  
+            for (let i = 0; i < cookies.length; i++) {  
+                let cookie = jQuery.trim(cookies[i]);  
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {  
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));  
+                    break;  
+                }  
+            }  
+        }  
+        return cookieValue;  
+    }  
+  
+    // 设置按钮点击事件监听器  
+    button.addEventListener('click', function () {  
+        let email_address = document.getElementById("email").value;  
+        if (!email_address) {  
+            alert('请输入邮箱地址！');  
+            return;  
+        }  
+  
+        // 防止按钮再被点击  
+        button.disabled = true;  
+        countdown = interval;  
+        button.className = 'btn btn-secondary';  
+        // 启动倒计时  
+        timer = setInterval(countdownTick, 1000);  
+  
+        // 发送请求，包含CSRF令牌  
+        $.ajax({  
+            url: '/info/sendemail/',  
+            type: 'POST',  
+            data: {  
+                'csrfmiddlewaretoken': getCookie('csrftoken'), // 添加CSRF令牌  
+                'new_email_address': email_address,  
+            },  
+            dataType: 'JSON',  
+            success: function (res) {  
+                if (res.state) {  
+                    alert(res.msg);  
+                } else {  
+                    alert(res.msg);  
+                    clearInterval(timer);  
+                    resetButton();  
+                }  
+            },  
+            error: function (xhr, status, error) {  
+                alert('发送验证码失败，请稍后再试。');  
+                clearInterval(timer);  
+                resetButton();  
+            }  
+        });  
+    });  
+</script>  
+{% endblock %}

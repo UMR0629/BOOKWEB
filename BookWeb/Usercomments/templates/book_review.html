@@ -116,6 +116,8 @@
         <ul class="review-list">
             {% for review in reviews %}
             <li>
+                <strong>用户：{{ review.commenter }}</strong>
+                </br>
                 <strong>评分：{{ review.rating }}</strong> 
                 <span class="review-comment">{{ review.comment }}</span>
             </li>

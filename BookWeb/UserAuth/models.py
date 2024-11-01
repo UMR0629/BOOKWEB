@@ -31,6 +31,7 @@ class User(models.Model):
     my_love_book = models.CharField(verbose_name="最喜爱的书籍", max_length=30, blank=True)
     my_love_author = models.CharField(verbose_name="最喜爱的作者", max_length=30, blank=True)
     maxim = models.CharField(verbose_name="格言", max_length=30, blank=True)
+    
 
     def __str__(self):
         return self.username

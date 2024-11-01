@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from UserAuth.utils.generateCode import send_sms_code
 from UserAuth.utils import validators
 from UserAuth.models import User
-
+from Usercomments.models import Book,Review
 
 from UserInfo.models import Resume
 
@@ -36,9 +36,10 @@ def index(request, pk):
         topic_current_page = topic_paginator.get_page(topic_page_number)
     except EmptyPage:
         topic_current_page = topic_paginator.page(topic_paginator.num_pages)
-
-    is_hr = obj.hr_allowed == 3  # 具有HR资格就要显示其发布的岗位
-
+    books = Book.objects.all().order_by('-average_rating')
+    reviews = []
+    for book in books:
+        reviews += book.reviews.all()
     user_info = {
         "id": pk,
         "username": obj.username,
@@ -56,7 +57,8 @@ def index(request, pk):
         'show_position': show_topic_page,
         'initial_position': request.GET.get('scrollPosition'),
         'scroll_to_bottom': show_topic_page,
-        'is_hr': is_hr,
+        'books': books,
+        'reviews':reviews
     }
     '''
     if is_hr:

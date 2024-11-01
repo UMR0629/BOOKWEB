@@ -26,8 +26,11 @@ def get_matching_files(request):
 
 # Create your views here.
 def home(request):
-
+    
     topics = Topic.objects.order_by('last_updated')
+    if 'search' in request.GET:
+        search_query = request.GET['search']
+        topics = Topic.objects.filter(subject__icontains=search_query)
 
     topics_per_page = 20
     paginator = Paginator(topics, topics_per_page)

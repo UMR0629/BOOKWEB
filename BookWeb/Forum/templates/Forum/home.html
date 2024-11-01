@@ -11,7 +11,7 @@
         color: #17a2b8 !important;
         font-weight: bold;
     }
-
+    
     .page-button {
         background-color: rgba(229, 229, 229, 0.5);
         color: black;
@@ -41,9 +41,21 @@
         border-radius: 3px;
         font-size: 15px;
         font-weight: bold;
-        width: 100%;
+        width: 80%;
         text-align: center;
         text-decoration: none;
+    }
+    .search-form a {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .search-form a:hover {
+        background-color: #218838;
     }
 
 </style>
@@ -55,6 +67,12 @@
     <div>
         <div class="mb-4">
             <a href="{% url 'Forum:new_topic' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>新建动态</a>
+        </div>
+        <div class="search-form">
+            <form action="." method="get">
+                <input type="text" name="search" placeholder="搜索贴子...">
+                <button type="submit" class="btn btn-primary custom-button"><i class="bi bi-search"></i>搜索</button>
+            </form>
         </div>
         {% if topics %}
         {% for topic in topics %}
@@ -88,9 +106,6 @@
                 </div>
                 <div class="col-2 d-flex justify-content-center align-items-center text-muted">
                     {{ topic.last_updated|naturaltime }}
-                </div>
-                <div class="col-2 d-flex justify-content-center align-items-center text-muted">
-                    <button type="submit">删除</button> 
                 </div>
             </div>
         </div>

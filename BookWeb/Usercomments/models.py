@@ -1,5 +1,5 @@
 from django.db import models
-
+from UserAuth.models import User
 # Create your models here.
 class Book(models.Model):
     title = models.CharField(max_length=200)  # 书名
@@ -15,3 +15,5 @@ class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
     rating = models.FloatField()  # 评分
     comment = models.TextField()  # 评分理由
+    commenter = models.CharField(verbose_name="用户名", max_length=32,default="未知用户")
+    
