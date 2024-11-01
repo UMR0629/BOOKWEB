@@ -6,56 +6,53 @@ from django.conf import settings
 from UserAuth.utils.validators import is_valid_email
 
 
-def check_code(width=120, height=30, char_length=5, font_file='MONACO.ttf', font_size=28):
-
+def check_code(width=120, height=40, char_length=5, font_file='MONACO.ttf', font_size=24):
     code = []
-    img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
+    img = Image.new(mode='RGB', size=(width, height), color=(240, 240, 240))  # 浅灰色背景
     draw = ImageDraw.Draw(img, mode='RGB')
 
     def rndChar():
-        """
-        生成随机字母
-        :return:
-        """
-        return chr(random.randint(65, 90))
+        """生成随机大写字母和数字"""
+        return random.choice('ABCDEFGHJKLMNPQRSTUVWXYZ23456789')
 
     def rndColor():
-        """
-        生成随机颜色
-        :return:
-        """
-        return random.randint(0, 255), random.randint(10, 255), random.randint(64, 255)
+        """生成较深的随机颜色"""
+        return random.randint(50, 150), random.randint(50, 150), random.randint(50, 150)
 
-    # 写文字
+    def rndBackgroundColor():
+        """生成背景随机浅色"""
+        return random.randint(180, 255), random.randint(180, 255), random.randint(180, 255)
+
+    # 设置字体
     font = ImageFont.truetype(font_file, font_size)
+
+    # 添加验证码字符
     for i in range(char_length):
         char = rndChar()
         code.append(char)
-        h = random.randint(0, 4)
-        draw.text([i * width / char_length, float(h)], char, font=font, fill=rndColor())
+        # 调整字符的水平间距和高度
+        x = i * width / char_length + random.randint(-2, 2)
+        y = random.randint(2, height - font_size - 2)
+        draw.text((x, y), char, font=font, fill=rndColor())
 
-    # 写干扰点
-    for i in range(40):
-        draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())
-
-    # 写干扰圆圈
-    for i in range(40):
-        draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())
+    # 添加干扰圆圈（减少数量、透明化）
+    for _ in range(10):
         x = random.randint(0, width)
         y = random.randint(0, height)
-        draw.arc((x, y, x + 4, y + 4), 0, 90, fill=rndColor())
+        radius = random.randint(5, 10)
+        draw.ellipse((x, y, x + radius, y + radius), outline=rndBackgroundColor(), width=1)
 
-    # 画干扰线
-    for i in range(5):
-        x1 = random.randint(0, width)
-        y1 = random.randint(0, height)
-        x2 = random.randint(0, width)
-        y2 = random.randint(0, height)
+    # 添加干扰线（减小数量并调整透明度）
+    for _ in range(3):
+        x1, y1 = random.randint(0, width), random.randint(0, height)
+        x2, y2 = random.randint(0, width), random.randint(0, height)
+        draw.line((x1, y1, x2, y2), fill=rndBackgroundColor(), width=1)
 
-        draw.line((x1, y1, x2, y2), fill=rndColor())
+    # 应用滤镜提升对比度
+    img = img.filter(ImageFilter.SMOOTH)
 
-    img = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
     return img, ''.join(code)
+
 
 
 def send_sms_code(target_email):
