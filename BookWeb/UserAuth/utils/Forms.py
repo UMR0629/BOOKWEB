@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
@@ -13,7 +14,7 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
     password = forms.CharField(
         label="密码",
         max_length=64,
-        widget=forms.PasswordInput(attrs={'placeholder': "请输入密码"}, render_value=True)
+        widget=forms.PasswordInput(attrs={'placeholder': "6-16位密码，不得包含特殊字符，不得为纯数字"}, render_value=True)
     )
     check_password = forms.CharField(
         label="确认密码",
@@ -43,6 +44,16 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.request = request
 
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        if not 6 <= len(password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', password):
+            raise ValidationError("密码不能包含特殊字符")
+        return password
+
     def clean_username(self):
         #if not is_username_valid(self.cleaned_data['username']):
             #raise ValidationError("用户名不允许存在特殊字符")
@@ -61,8 +72,16 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
         return self.cleaned_data['email']
 
     def clean_check_password(self):
-        if not self.cleaned_data['password'] == self.cleaned_data['check_password']:
+        password = self.cleaned_data.get('password')
+        check_password = self.cleaned_data['check_password']
+        if password != check_password:
             raise ValidationError("两次密码不一致")
+        if not 6 <= len(password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', password):
+            raise ValidationError("密码不能包含特殊字符")
         return self.cleaned_data['check_password']
 
     def clean_verification_code(self):
@@ -141,7 +160,24 @@ class ResetPasswordForm(BootStrapForm, forms.Form):
             raise ValidationError("验证码错误")
         return self.cleaned_data['verification_code']
 
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        if not 6 <= len(password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', password):
+            raise ValidationError("密码不能包含特殊字符")
+        return password
+
     def clean_check_password(self):
-        if not self.cleaned_data['password'] == self.cleaned_data['check_password']:
-            raise ValidationError("两次输入的密码不一致！")
-        return self.cleaned_data['password']
+        password = self.cleaned_data.get('password')
+        check_password = self.cleaned_data['check_password']
+        if password != check_password:
+            raise ValidationError("两次密码不一致")
+        if not 6 <= len(password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', password):
+            raise ValidationError("密码不能包含特殊字符")
