@@ -22,7 +22,7 @@ def get_matching_files(request):
             matching_files.append(file_name)
     # 没有上传就用默认的
     if not matching_files:
-        matching_files.append('default.jpeg')
+        matching_files.append('default.png')
     return matching_files[0]
 
 
@@ -171,6 +171,7 @@ def gtopic_posts(request, pk):
     gtopic = get_object_or_404(GTopic, pk=pk)
     gtopic.views += 1
     gtopic.save()
+    gid=request.session['UserInfo'].get('id')
     thestarter=User.objects.get(pk=request.session['UserInfo'].get('id'))
     thegroup= Village.objects.get(pk=request.session['GroupInfo'].get('id'))
     query_set=Experience.objects.filter(user=thestarter,admin=thegroup)
@@ -193,6 +194,7 @@ def gtopic_posts(request, pk):
     context = {
         'topic': gtopic,
         'matching_files': get_matching_files(request),
+        'gid': gid,
         'level':level,
         'flag1':flag1,
         'flag2':flag2,

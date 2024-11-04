@@ -88,7 +88,7 @@ def book_list(request):
     if 'search' in request.GET:
         search_query = request.GET['search']
         books = Book.objects.filter(title__icontains=search_query)
-    default_image_path = 'book_images/default.jpg'
+    default_image_path = 'book_images/default.png'
     for book in books:
         if not book.image:
             default_image = open(os.path.join(settings.MEDIA_ROOT, default_image_path), 'rb')

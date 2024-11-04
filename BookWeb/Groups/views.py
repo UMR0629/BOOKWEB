@@ -35,7 +35,7 @@ def create(request):
     group=form.save()
     group.members.add(theuser)
     Experience.objects.create(experience=0, admin=group, user=theuser ) 
-    return redirect("/")
+    return redirect("/group/show/")
 
 def show(request):
     

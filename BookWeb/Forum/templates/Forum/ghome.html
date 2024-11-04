@@ -55,7 +55,7 @@
     <div>
         <div class="container d-flex justify-content-between align-items-center">  
             <div class="mb-4">  
-                <a href="{% url 'Forum:new_topic' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>新建动态</a>  
+                <a href="{% url 'Forum:new_group_topic' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>新建动态</a>  
             </div>  
             <div class="search-form">  
                 <form action="." method="get">  
@@ -80,7 +80,7 @@
                         {% with user_id=topic.starter.id|stringformat:'d' %}
                             {% with user_avatar_path="images/"|add:user_id %}
                                 {% query_image_extension user_avatar_path as user_avatar_full_path %}
-                                {% with default_avatar_path='images/default.jpeg' %}
+                                {% with default_avatar_path='images/default.png' %}
                                     {% if user_avatar_full_path|static_file_exists %}
                                         <img src="{% static user_avatar_full_path %}?rand=<%= Date.now() %>" alt="用户头像" class="rounded-circle" style="width:40px; height:40px;">
                                     {% else %}
