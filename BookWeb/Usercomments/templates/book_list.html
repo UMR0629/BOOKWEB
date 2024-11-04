@@ -15,11 +15,12 @@
     }
     .container {
         width: 80%;
-        margin: 10px auto;
+        margin: 25px auto;
         padding: 10px;
         background-color: #f8f9fa;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding-top: 5px;
     }
     
     @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');  
@@ -122,7 +123,8 @@
                     <p>作者：{{ book.author }}</p>
                     <p>平均评分: {{ book.average_rating }}</p>
                     <p>评分人数: {{ book.total_numbers }}</p>
-                    <a href="{% url 'Usercomments:book_review' book.id %}">评分</a>
+                    
+                    <a href="{% url 'Usercomments:book_review' book.id %}" class="btn btn-primary">我要评分</a>
                 </div>
             </li>
             </div>

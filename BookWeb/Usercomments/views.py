@@ -49,6 +49,7 @@ def book_review(request, book_id):
 
 def add_book(request):
     if request.method == 'POST':
+        user_name = request.session['UserInfo'].get("username")
         title = request.POST.get('title')
         author = request.POST.get('author','Unknown')
         rating_str = request.POST.get('rating')
@@ -76,7 +77,7 @@ def add_book(request):
                 book.total_numbers += 1
                 book.average_rating = ((book.average_rating * (book.total_numbers - 1)) + rating) / book.total_numbers
             book.save()
-            Review.objects.create(book=book, rating=float(rating), comment=comment)
+            Review.objects.create(book=book, commenter = user_name,rating=float(rating), comment=comment)
             return redirect('Usercomments:book_list')  # 重定向到书籍列表页面
     else:
         return render(request, 'add_book.html')

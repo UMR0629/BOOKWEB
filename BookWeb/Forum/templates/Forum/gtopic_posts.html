@@ -29,6 +29,31 @@
                         <span class="ms-1 text-muted">
                             {{ post.created_by.username }}
                         </span>
+                        {% if flag1 %}
+                        <span class="ms-1 text-muted">
+                        潜水用户 
+                        </span>
+                        {% endif %}
+                        {% if flag2 %}
+                        <span class="ms-1 text-muted">
+                        偶尔冒泡
+                        </span>
+                        {% endif %}
+                        {% if flag3 %}
+                        <span class="ms-1 text-muted">
+                        资深读者
+                        </span>
+                        {% endif %}
+                        {% if flag4 %}
+                        <span class="ms-1 text-muted">
+                        知无不言
+                        </span>
+                        {% endif %}
+                        {% if flag5%}
+                        <span class="ms-1 text-muted">
+                        大阅读家
+                        </span>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row" style="margin-left: 47px;">

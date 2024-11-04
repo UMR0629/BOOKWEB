@@ -1,6 +1,8 @@
+{% load static static_tags %}
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.css' %}" type="text/css" media="all">
     <title>Book Review</title>
     <style>
         body {
@@ -125,6 +127,9 @@
             <li>暂无评分</li>
             {% endfor %}
         </ul>
+        <div style="text-align:center">
+            <a href="{% url 'Usercomments:book_list' %}" class="btn btn-primary custom-button">返回书籍清单</a>
+        </div>
     </div>
 </body>
 </html>

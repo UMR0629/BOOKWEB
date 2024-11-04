@@ -464,5 +464,5 @@ def find_image(request):
             matching_files.append(file_name)
     # 没有上传就用默认的
     if not matching_files:
-        matching_files.append('default.jpeg')
+        matching_files.append('default.png')
     return matching_files[0]

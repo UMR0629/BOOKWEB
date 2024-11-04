@@ -175,7 +175,7 @@
                 {% with user_id=id|stringformat:'d' %}
                     {% with user_avatar_path="images/"|add:user_id %}
                         {% query_image_extension user_avatar_path as user_avatar_full_path %}
-                        {% with default_avatar_path='images/default.jpeg' %}
+                        {% with default_avatar_path='images/default.png' %}
                             {% if user_avatar_full_path|static_file_exists %}
                                 <img src="{% static user_avatar_full_path %}?rand=<%= Date.now() %>" alt="用户头像" class="img-fluid d-block m-auto" style="width:250px;height: 250px;">
                             {% else %}
@@ -221,6 +221,11 @@
                     <p><span class="custom-text-color">格言:</span> {{ maxim }}</p>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-11 d-flex justify-content-end">
+                    <a href="/" class="btn btn-primary custom-button">返回首页</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -263,7 +268,7 @@
                                         {% with user_id=topic.starter.id|stringformat:'d' %}
                                             {% with user_avatar_path="images/"|add:user_id %}
                                                 {% query_image_extension user_avatar_path as user_avatar_full_path %}
-                                                {% with default_avatar_path='images/default.jpeg' %}
+                                                {% with default_avatar_path='images/default.png' %}
                                                     {% if user_avatar_full_path|static_file_exists %}
                                                         <img src="{% static user_avatar_full_path %}?rand=<%= Date.now() %>" alt="用户头像" class="rounded-circle" style="width:40px; height:40px;">
                                                     {% else %}

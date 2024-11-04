@@ -4,9 +4,10 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
 
 from UserAuth.models import User
-from Groups.models import Village
+from Groups.models import Village,Experience
 from .models import Topic, Post, GTopic, GPost
 from .forms import NewTopicForm, PostForm, NewGTopicForm, GPostForm
+import math  
 
 import re
 import os
@@ -142,11 +143,18 @@ def new_gtopic(request):
             gtopic.group = Village.objects.get(pk=request.session['GroupInfo'].get('id'))
             gtopic.starter = User.objects.get(pk=request.session['UserInfo'].get('id'))
             gtopic.save()
+            thestarter=User.objects.get(pk=request.session['UserInfo'].get('id'))
+            thegroup= Village.objects.get(pk=request.session['GroupInfo'].get('id'))
+            query_set=Experience.objects.filter(user=thestarter,admin=thegroup)
+            exp=query_set.first()
+            exp.experience+=1
+            exp.save()
             post = GPost.objects.create(
                 message=form.cleaned_data.get('message'),
                 topic=gtopic,
                 created_by=gtopic.starter
             )
+
             return redirect('Forum:group_posts', pk=gtopic.pk)
 
     else:
@@ -163,10 +171,34 @@ def gtopic_posts(request, pk):
     gtopic = get_object_or_404(GTopic, pk=pk)
     gtopic.views += 1
     gtopic.save()
-
+    thestarter=User.objects.get(pk=request.session['UserInfo'].get('id'))
+    thegroup= Village.objects.get(pk=request.session['GroupInfo'].get('id'))
+    query_set=Experience.objects.filter(user=thestarter,admin=thegroup)
+    exp=query_set.first()
+    expnum=exp.experience+1
+    level=math.log2(expnum)
+    level=math.floor(level)
+    flag4=flag1=flag3=flag5=flag2=False
+    if level<=1:
+        flag1=True
+    elif level==2: 
+        flag2=True
+    elif level==3: 
+        flag3=True
+    elif level==4: 
+        flag4=True
+    elif level>=5:
+        flag5=True
+    
     context = {
         'topic': gtopic,
         'matching_files': get_matching_files(request),
+        'level':level,
+        'flag1':flag1,
+        'flag2':flag2,
+        'flag3':flag3,
+        'flag4':flag4,
+        'flag5':flag5
     }
 
     return render(request, 'Forum/gtopic_posts.html', context)
@@ -181,6 +213,15 @@ def reply_gtopic(request, pk):
             post.topic = gtopic
             post.created_by = User.objects.get(pk=request.session['UserInfo'].get('id'))
             post.save()
+            thestarter=User.objects.get(pk=request.session['UserInfo'].get('id'))
+            thegroup= Village.objects.get(pk=request.session['GroupInfo'].get('id'))
+            query_set=Experience.objects.filter(user=thestarter,admin=thegroup)
+            exp=query_set.first()
+            print(exp.user.username)
+            print(exp.experience)
+            exp.experience=exp.experience+1
+            print(exp.experience)
+            exp.save()
             return redirect('Forum:group_posts', pk=pk)
     else:
         form = PostForm()

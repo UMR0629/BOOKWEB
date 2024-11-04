@@ -53,14 +53,18 @@
 {% block content %}
 <div style="border-radius: 10px; margin-bottom: 50px;" class="mt-4 p-4 bg-light">
     <div>
-        <div class="mb-4">
-            <a href="{% url 'Forum:new_group_topic' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>新建动态</a>
+        <div class="container d-flex justify-content-between align-items-center">  
+            <div class="mb-4">  
+                <a href="{% url 'Forum:new_topic' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>新建动态</a>  
+            </div>  
+            <div class="search-form">  
+                <form action="." method="get">  
+                    <input type="text" name="search" placeholder="搜索贴子..." >  
+                    <button type="submit" class="btn btn-primary custom-button"><i class="bi bi-search"></i>搜索</button>  
+                </form>  
+            </div>  
         </div>
-        {% if identity %}
-        <div class="mb-4">
-            <a href="{% url 'Groups:applicants' gid%}" class="btn btn-primary custom-button"></i>入村申请</a>
-        </div>
-        {% endif %}
+        
         {% if topics %}
         {% for topic in topics %}
         <div class="p-2 topic-card"

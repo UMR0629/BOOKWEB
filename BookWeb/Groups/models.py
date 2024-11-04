@@ -14,4 +14,10 @@ class Village(models.Model):
     def __str__(self):
         return self.villagename
     
-
+class Experience(models.Model):
+    experience=models.SmallIntegerField(verbose_name="经验")
+    admin = models.ForeignKey(Village, related_name='admin_groups', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='exp', on_delete=models.CASCADE)
+    def __str__(self):
+        return self.user.username
+    

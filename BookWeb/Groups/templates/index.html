@@ -89,8 +89,8 @@
     }
 
     .card{
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
     }
@@ -162,64 +162,56 @@
         text-align: center;
         text-decoration: none;
     }
-
+    
 </style>
 
 {% endblock %}
 
-{% block content %}
-<div class="container content-container">
-    <div class="row" style="margin:0 auto; padding-left:100px;">
-        <div class="col-md-7 border right bg-light" style="width: 60%">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="rbox">
-                        <h3 id="username" style="font-weight: bold;">{{ villagename }}</h3>
+{% block content %}  
+<div class="container content-container">  
+    <div class="row justify-content-center"> <!-- 使用 justify-content-center 来水平居中内容 -->  
+        <div class="col-md-7 border bg-light">  
+            <div class="text-center"> <!-- 添加 text-center 类来居中标题 -->  
+                <div class="rbox">  
+                    <h3 id="username" style="font-weight: bold;">{{ villagename }}</h3>  
+                </div>  
+            </div>  
+            <div class="text-center mb-4"> <!-- 添加 text-center 类来居中按钮 -->  
+                {% if ingroup == True %}  
+                    <a href="{% url 'Forum:group_home' id %}" class="btn btn-primary custom-button"><i class="fas fa-arrow-right me-1"></i>进入村落</a>  
+                {% else %}  
+                    <a href="{% url 'Apply:apply' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>加入村落</a>  
+                {% endif %}  
+                {% if identity %}  
+                    <a href="{% url 'Groups:applicants' id %}" class="btn btn-primary custom-button ms-2"><i class="fas fa-arrow-right me-1"></i>入村申请</a>  
+                {% endif %}  
+            </div>  
+            <div class="rbox  col-md-10 mt-3"> <!-- 添加 text-center 类来居中村落信息标题 -->  
+                <h4>村落信息</h4>  
+                <div class="column">  
+                    <p><span class="custom-text-color">村长:</span> {{ admin }}</p>  
+                    <p><span class="custom-text-color">村长信箱:</span> {{ adminemail }}</p>  
+                    <p><span class="custom-text-color">格言:</span> {{ maxim }}</p>  
+                </div>  
+            </div>  
+            <div class="rbox col-md-10 mt-3"> <!-- 添加 text-center 类来居中村民标题 -->  
+                <h4>村民</h4>  
+                {% if members %}
+                {% for member in members.all %}
+                <div class="rbox col-md-10" style="margin-top: 10px;">
+                    <div class="column">
+                        <p><span class="custom-text-color">用户名:</span> {{ member.username }}</p>
+                        <p><span class="custom-text-color">信箱:</span> {{member.email}}</p>
+                        <p><span class="custom-text-color">格言:</span> {{ member.maxim }}</p>
+                        {% if identity %}
+                        <a href="{% url 'Groups:delete' villagename member.username%}" class="btn btn-primary custom-button"><i class="fas fa-minus me-1"></i>删除成员</a>
+                        {% endif %}
                     </div>
                 </div>
-            
-
-            </div>
-            <div class="mb-4">
-                {% if ingroup == True %}
-                    <a href="{% url 'Forum:group_home' id %}" class="btn btn-primary custom-button"><i class="fas fa-arrow-right me-1"></i>进入村落</a>
-                {% else %}
-                    <a href="{% url 'Apply:apply' %}" class="btn btn-primary custom-button"><i class="fas fa-plus me-1"></i>加入村落</a>
-                {% endif %}
-            </div>
-            {% if identity %}
-            <div class="mb-4">
-                <a href="{% url 'Groups:applicants' id%}" class="btn btn-primary custom-button"><i class="fas fa-arrow-right me-1"></i>入村申请</a>
-            </div>
-            {% endif %}
-            <div class="rbox col-md-10" style="margin-top: 10px;">
-                <h4>村落信息</h4>
-                <div class="column">
-                    <p><span class="custom-text-color">村长:</span> {{ admin }}</p>
-                    <p><span class="custom-text-color">村长信箱:</span> {{adminemail}}</p>
-                    <p><span class="custom-text-color">格言:</span> {{ maxim }}</p>
-                </div>
-            </div>
-            <div class="rbox col-md-10" style="margin-top: 10px;">
-                <h4>村民</h4>
-            </div>
-            {% if members %}
-            {% for member in members.all %}
-            <div class="rbox col-md-10" style="margin-top: 10px;">
-                <div class="column">
-                    <p><span class="custom-text-color">用户名:</span> {{ member.username }}</p>
-                    <p><span class="custom-text-color">信箱:</span> {{member.email}}</p>
-                    <p><span class="custom-text-color">格言:</span> {{ member.maxim }}</p>
-                    {% if identity %}
-                    <a href="{% url 'Groups:delete' villagename member.username%}" class="btn btn-primary custom-button"><i class="fas fa-minus me-1"></i>删除成员</a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-            {% endif %}
-        </div>
-    </div>
-</div>
-
+                {% endfor %}
+                {% endif %} 
+            </div>  
+        </div>  
+    </div>  
+</div>  
 {% endblock %}
-

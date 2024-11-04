@@ -1,23 +1,21 @@
-
 .navbar{
     z-index: 999;
 }
 
 .custom-text-color {
-    color: #17a2b8 !important;
+    color: #17b87d !important;
     font-weight: bold;
 }
 
 .custom-background{
-    background-color: #E5E5E5;
+    background-color: #17a2b8;
     background-image: url("图书馆.jpeg");
     background-attachment: fixed;
     background-size: cover
-    
 }
 
 .custom-button{
-    background-color: #17a2b8;
+    background-color: #1742b8;
     color: white;
     border: 1px solid #17a2b8;
 }

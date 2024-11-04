@@ -4,7 +4,7 @@ from django.urls import reverse
 from Groups.utils.forms import CreateForm
 from UserAuth.models import User
 from django.shortcuts import render, HttpResponse, redirect
-from Groups.models import Village;
+from Groups.models import Village,Experience
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import get_object_or_404 
 from Apply.models import Application
@@ -29,16 +29,20 @@ def create(request):
     tmp_id=request.session['UserInfo'].get("id")
     if tmp_id==None:
         return redirect("/info/info/")
-    user = User.objects.get(id=tmp_id)
+    theuser = User.objects.get(id=tmp_id)
     #form.admin_id= request.session['UserInfo'].get("id")
-    form.instance.admin=user
+    form.instance.admin=theuser
     group=form.save()
-    group.members.add(user)
+    group.members.add(theuser)
+    Experience.objects.create(experience=0, admin=group, user=theuser ) 
     return redirect("/")
 
 def show(request):
     
     villages = Village.objects.order_by('villagename')  #这里看看要不要根据群组人数什么的进行排序
+    if 'search' in request.GET:
+        search_query = request.GET['search']
+        villages = Village.objects.filter(subject__icontains=search_query)
 
     villages_per_page = 20
     paginator = Paginator(villages, villages_per_page)
@@ -136,6 +140,7 @@ def manage(request,gid,theapplicant):
     village=Village.objects.get(id=gid)
     theapplicant=User.objects.get(username=theapplicant)
     village.members.add(theapplicant)
+    Experience.objects.create(experience=0, admin=village, user=theapplicant )  
     gid=village.id
     context = {
         'gid':gid

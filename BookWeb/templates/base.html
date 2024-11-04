@@ -12,35 +12,40 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
     {% block stylesheet %}{% endblock %}
+    <style>
+        .custom-font-kaiti {  
+            font-family: '楷体', 'KaiTi', serif;   
+           }
+    </style>
 </head>
+
+
+
 <body class="custom-background">
 
     {% block body %}
         <nav class="navbar navbar-expand-sm navbar-light bg-light">
             <div class="container">
-                <a class="navbar-brand custom-text-color" href="{% url 'Forum:home' %}">Books</a>
+                {% with default_avatar_path='images/book.png' %}
+                <img src="{% static default_avatar_path %}" alt="默认头像" class="rounded-circle" style="width:40px; height:40px;margin-right: 20px;">
+                {%endwith%}
+                <a class="navbar-brand custom-text-color custom-font-kaiti" href="{% url 'Forum:home' %}">读书不觉已春深，一寸光阴一寸金</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link custom-nav-link" style="margin-left: 1rem;" href="{% url 'Forum:home' %}">集市</a>
+                            <a class="nav-link custom-nav-link custom-font-kaiti" style="margin-left: 1rem; font-size:20px" href="{% url 'Forum:home' %}">集市</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link custom-nav-link" style="margin-left: 1rem;" href="{% url 'Usercomments:book_list' %}">展会</a>
+                            <a class="nav-link custom-nav-link custom-font-kaiti" style="margin-left: 1rem;font-size:20px" href="{% url 'Usercomments:book_list' %}">展会</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link custom-nav-link" style="margin-left: 1rem;" href="{% url 'Groups:show_group' %}">村落</a>
+                            <a class="nav-link custom-nav-link custom-font-kaiti" style="margin-left: 1rem;font-size:20px" href="{% url 'Groups:show_group' %}">村落</a>
                         </li>
                     </ul>
-                    <form class="d-flex" method="get" action="/position/list/">
-                        <input class="form-control me-2" type="text" name="keyword" placeholder="搜索书籍...">
-                        <input type="hidden" name="target_place" value="0">
-                        <input type="hidden" name="page" value="1">
-                        <input type="hidden" name="page_size" value="10">
-                        <button class="btn btn-primary custom-button" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
+                    
                     {% if 'UserInfo' in request.session %}
                         <div class="nav-item dropdown">
                             {% with id=request.session.UserInfo.id %}
@@ -48,11 +53,11 @@
                                     {% with user_id=id|stringformat:'d' %}
                                         {% with user_avatar_path="images/"|add:user_id %}
                                             {% query_image_extension user_avatar_path as user_avatar_full_path %}
-                                            {% with default_avatar_path='images/default.jpeg' %}
+                                            {% with default_avatar_path='images/default.png' %}
                                                 {% if user_avatar_full_path|static_file_exists %}
-                                                    <img src="{% static user_avatar_full_path %}?rand=<%= Date.now() %>" alt="用户头像" class="rounded-circle" style="width:40px; height:40px;">
+                                                    <img src="{% static user_avatar_full_path %}?rand=<%= Date.now() %>" alt="用户头像" class="rounded-circle" style="width:40px; height:40px;margin-right: 30px;">
                                                 {% else %}
-                                                    <img src="{% static default_avatar_path %}" alt="默认头像" class="rounded-circle" style="width:40px; height:40px;">
+                                                    <img src="{% static default_avatar_path %}" alt="默认头像" class="rounded-circle" style="width:40px; height:40px;margin-right: 30px;">
                                                 {% endif %}
                                             {% endwith %}
                                         {% endwith %}
@@ -60,23 +65,12 @@
                                 </a>
                             {% endwith %}
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'UserInfo:application' %}">我的投递</a>
-                                <a class="dropdown-item" href="{% url 'Forum:home' %}">我的收件箱</a>
-                                <a class="dropdown-item" href="{% url 'UserInfo:user_info' %}">个人主页</a>
                                 <a class="dropdown-item" href="{% url 'UserInfo:account' %}">账号安全</a>
-                                <a class="dropdown-item" href="{% url 'UserInfo:my_position' %}">我发布的职位</a>
+                                <a class="dropdown-item" href="{% url 'UserInfo:user_info' %}">个人主页</a>                                
                                 <a class="dropdown-item" href="{% url 'UserAuth:logout' %}">退出登录</a>
                             </div>
                         </div>
-                        <div class="nav-item dropdown">
-                            <button type="button" class="btn btn-primary custom-button dropdown-toggle" onclick="window.location.href='#'" data-toggle="dropdown">
-                                发布
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'Forum:new_topic' %}">发帖子</a>
-                                <a class="dropdown-item" href="{% url 'Forum:home'%}">请评书</a>
-                            </div>
-                        </div>
+                        
                     {% else %}
                         <form class="form-inline ml-auto">
                             <a href="{% url 'UserAuth:login' %}" class="btn btn-outline-secondary">Log in</a>
