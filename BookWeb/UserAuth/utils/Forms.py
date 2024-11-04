@@ -73,16 +73,18 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
 
     def clean_check_password(self):
         password = self.cleaned_data.get('password')
-        check_password = self.cleaned_data['check_password']
+        if password is None:
+            return self.cleaned_data.get('check_password')
+        check_password = self.cleaned_data.get('check_password')
+        if not 6 <= len(check_password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if check_password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', check_password):
+            raise ValidationError("密码不能包含特殊字符")
         if password != check_password:
             raise ValidationError("两次密码不一致")
-        if not 6 <= len(password) <= 16:
-            raise ValidationError("密码长度必须为6-16位")
-        if password.isdigit():
-            raise ValidationError("密码不能为纯数字")
-        if not re.match(r'^[A-Za-z0-9]+$', password):
-            raise ValidationError("密码不能包含特殊字符")
-        return self.cleaned_data['check_password']
+        return check_password
 
     def clean_verification_code(self):
         code_in_session = self.request.session.get('register_verification_code')
@@ -172,12 +174,15 @@ class ResetPasswordForm(BootStrapForm, forms.Form):
 
     def clean_check_password(self):
         password = self.cleaned_data.get('password')
-        check_password = self.cleaned_data['check_password']
+        if password is None:
+            return self.cleaned_data.get('check_password')
+        check_password = self.cleaned_data.get('check_password')
+        if not 6 <= len(check_password) <= 16:
+            raise ValidationError("密码长度必须为6-16位")
+        if check_password.isdigit():
+            raise ValidationError("密码不能为纯数字")
+        if not re.match(r'^[A-Za-z0-9]+$', check_password):
+            raise ValidationError("密码不能包含特殊字符")
         if password != check_password:
             raise ValidationError("两次密码不一致")
-        if not 6 <= len(password) <= 16:
-            raise ValidationError("密码长度必须为6-16位")
-        if password.isdigit():
-            raise ValidationError("密码不能为纯数字")
-        if not re.match(r'^[A-Za-z0-9]+$', password):
-            raise ValidationError("密码不能包含特殊字符")
+        return check_password
