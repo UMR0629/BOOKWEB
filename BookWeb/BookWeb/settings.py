@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-+%gna*&%5_kq$3m^@+_l_wc&xx1hovdq_rl)oq2=q-nyg@q@iq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -59,7 +60,34 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    "https://cdn.staticfile.org",
+    "https://cdn.jsdelivr.net",
+    "https://cdnjs.cloudflare.com",  
+)
+CSP_SCRIPT_SRC = (
+    "'self'", 
+    "https://cdn.staticfile.org", 
+    "https://cdn.jsdelivr.net", 
+)
+CSP_FONT_SRC = (
+    "'self'", 
+    "https://cdn.jsdelivr.net", 
+    "https://cdnjs.cloudflare.com", 
+)
+CSP_IMG_SRC = (
+    "'self'",
+    "https://cdn.jsdelivr.net",
+)
+
 ROOT_URLCONF = "BookWeb.urls"
+
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_HTTPONLY = True
 
 TEMPLATES = [
     {
