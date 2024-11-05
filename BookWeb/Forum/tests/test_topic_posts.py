@@ -5,18 +5,18 @@ from UserAuth.models import User
 
 from Forum.models import Topic, Post
 from Forum.views import home, topic_posts
-
+from UserAuth.utils.encrypt import md5_encrypt
 
 class TopicPostsTests(TestCase):
 
     def setUp(self):
-        user = User.objects.create(username='songyhinf', password='0123456789', mobile_phone='17325493149',
-                                   email='songyhinf@qq.com',
+        user = User.objects.create(username='dyx', password=md5_encrypt('123'), mobile_phone='15726359738',
+                                   email='2335915224@qq.com',
                                    gender=1, hr_allowed=1, identity=1)
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'dyx',
+            'password': '123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)

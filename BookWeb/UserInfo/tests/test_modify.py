@@ -5,31 +5,31 @@ from UserAuth.models import User
 from UserInfo.views import modify
 
 from Forum.models import Topic, Post
-
+from UserAuth.utils.encrypt import md5_encrypt
 
 class InfoResumeTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username='songyhinf', password='0123456789', mobile_phone='17325493149',
-                                   email='songyhinf@qq.com',
+        self.user = User.objects.create(username='duyuxin', password=md5_encrypt('Duyuxin123'), mobile_phone='15726359756',
+                                   email='2335915224@qq.com',
                                    gender=1, hr_allowed=1, identity=1)
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'duyuxin',
+            'password': 'Duyuxin123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)
         url = reverse('UserInfo:modify')
         self.response = self.client.get(url)
-
+    
     def test_index_status_code(self):
         self.assertEqual(self.response.status_code, 200)
-
+    
     def test_index_url_resolve_index_view(self):
         view = resolve('/info/modify/')
         self.assertEqual(view.func, modify)
-
+    
     def test_csrf(self):
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
@@ -37,20 +37,20 @@ class InfoResumeTest(TestCase):
         self.assertContains(self.response, '<form')
 
     def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 10)
-        self.assertContains(self.response, 'type="text"', 5)
+        self.assertContains(self.response, '<input', 11)
+        self.assertContains(self.response, 'type="text"', 6)
 
 
 class SuccessfulModifyTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username='songyhinf', password='0123456789', mobile_phone='17325493149',
-                                        email='songyhinf@qq.com',
+        self.user = User.objects.create(username='duyuxin', password=md5_encrypt('Duyuxin123'), mobile_phone='15726359756',
+                                        email='2335915224@qq.com',
                                         gender=1, hr_allowed=1, identity=1, school='SJTU')
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'duyuxin',
+            'password': 'Duyuxin123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)

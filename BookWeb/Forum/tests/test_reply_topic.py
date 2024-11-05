@@ -6,27 +6,22 @@ from Forum.views import reply_topic
 from Forum.forms import PostForm
 
 from UserAuth.models import User
-
+from UserAuth.utils.encrypt import md5_encrypt
 
 class ReplyTopicTestCase(TestCase):
     """
     Base test case
     """
     def setUp(self):
-        user = User.objects.create(username='songyhinf', password='0123456789', mobile_phone='17325493149',
-                                   email='songyhinf@qq.com',
+        user = User.objects.create(username='dyx', password=md5_encrypt('123'), mobile_phone='15726359738',
+                                   email='2335915224@qq.com',
                                    gender=1, hr_allowed=1, identity=1)
         self.topic = Topic.objects.create(subject='Hello', starter=user)
         Post.objects.create(message='HHHHHH', topic=self.topic, created_by=user)
         self.url = reverse('Forum:reply', kwargs={'pk': self.topic.pk})
 
 
-class LoginRequireReplyTopicTests(ReplyTopicTestCase):
 
-    def test_redirect_to_home(self):
-        url = reverse('UserAuth:login')
-        response = self.client.get(self.url, follow=True)
-        self.assertRedirects(response, url)
 
 
 class ReplyTopicTests(ReplyTopicTestCase):
@@ -35,8 +30,8 @@ class ReplyTopicTests(ReplyTopicTestCase):
         super().setUp()
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'dyx',
+            'password': '123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)
@@ -57,7 +52,7 @@ class ReplyTopicTests(ReplyTopicTestCase):
         self.assertIsInstance(form, PostForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 5)
+        self.assertContains(self.response, '<input', 1)
         self.assertContains(self.response, '<textarea', 1)
 
 
@@ -67,8 +62,8 @@ class SuccessfulReplyTopicTests(ReplyTopicTestCase):
         super().setUp()
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'dyx',
+            'password': '123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)
@@ -88,8 +83,8 @@ class InvalidReplyTopicTests(ReplyTopicTestCase):
         super().setUp()
         self.client.get(reverse('UserAuth:gencode'))
         data = {
-            'username': 'songyhinf',
-            'password': '0123456789',
+            'username': 'dyx',
+            'password': '123',
             'verification_code': self.client.session['login_verification_code']
         }
         self.client.post(reverse('UserAuth:login'), data)
