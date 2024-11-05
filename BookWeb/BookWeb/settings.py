@@ -70,8 +70,10 @@ CSP_STYLE_SRC = (
 )
 CSP_SCRIPT_SRC = (
     "'self'", 
+    "'unsafe-inline'",
     "https://cdn.staticfile.org", 
     "https://cdn.jsdelivr.net", 
+    "https://cdnjs.cloudflare.com",  
 )
 CSP_FONT_SRC = (
     "'self'", 
