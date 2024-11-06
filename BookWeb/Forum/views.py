@@ -29,7 +29,7 @@ def get_matching_files(request):
 # Create your views here.
 def home(request):
     
-    topics = Topic.objects.order_by('last_updated')
+    topics = Topic.objects.order_by('-last_updated')
     if 'search' in request.GET:
         search_query = request.GET['search']
         topics = Topic.objects.filter(subject__icontains=search_query)
@@ -109,7 +109,7 @@ def Ghome(request,gpk):
     #print(tmp_id)
     query_set = Village.objects.filter(id=gpk)
     obj=query_set.first()
-    Gtopics = obj.gtopics.order_by('last_updated') 
+    Gtopics = obj.gtopics.order_by('-last_updated') 
     
     Gtopics_per_page = 20
     paginator = Paginator(Gtopics, Gtopics_per_page)
