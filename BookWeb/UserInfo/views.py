@@ -40,7 +40,6 @@ def index(request, pk):
     reviews = []
     for book in books:
         reviews += book.reviews.all()
-    usergroups=obj.groups
     user_info = {
         "id": pk,
         "username": obj.username,
@@ -60,7 +59,6 @@ def index(request, pk):
         'scroll_to_bottom': show_topic_page,
         'books': books,
         'reviews':reviews,
-        "usergroups":usergroups.all()
     }
     '''
     if is_hr:

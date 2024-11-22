@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'Forum',
     "UserInfo",
     "Usercomments",
-    "Groups",
-    "Apply"
     
 ]
 
