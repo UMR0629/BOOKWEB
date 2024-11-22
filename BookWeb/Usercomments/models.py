@@ -17,3 +17,4 @@ class Review(models.Model):
     comment = models.TextField()  # 评分理由
     commenter = models.CharField(verbose_name="用户名", max_length=32,default="未知用户")
     
+

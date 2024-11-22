@@ -30,38 +30,4 @@ CREATE TABLE book (
     image VARCHAR(255) DEFAULT 'default.png' COMMENT '封面图片'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='图书表';
 
--- 创建图书评论表
-CREATE TABLE review (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    book_id INT NOT NULL COMMENT '关联图书',
-    rating FLOAT NOT NULL COMMENT '评分',
-    comment TEXT NOT NULL COMMENT '评分理由',
-    commenter VARCHAR(32) NOT NULL DEFAULT '未知用户' COMMENT '用户名',
-    FOREIGN KEY (book_id) REFERENCES book(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='图书评论表';
-
--- 创建话题表
-CREATE TABLE topic (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    subject VARCHAR(255) NOT NULL COMMENT '主题',
-    last_updated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
-    starter_id INT NOT NULL COMMENT '发起者',
-    views INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览次数',
-    FOREIGN KEY (starter_id) REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='主题表';
-
--- 创建帖子表
-CREATE TABLE post (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT NOT NULL COMMENT '消息内容',
-    topic_id INT NOT NULL COMMENT '关联主题',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME NULL COMMENT '更新时间',
-    created_by_id INT NOT NULL COMMENT '创建者',
-    updated_by_id INT NULL COMMENT '更新者',
-    FOREIGN KEY (topic_id) REFERENCES topic(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (updated_by_id) REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子表';
-
 
