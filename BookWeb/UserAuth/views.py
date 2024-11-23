@@ -182,12 +182,7 @@ def reset_password_email(request):
 
     username_or_mobile = request.POST.get('username_or_mobile')
     # 判断输入的是手机号还是用户名
-    pattern = r'\d{11}'
-    if re.search(pattern=pattern, string=username_or_mobile):
-        # 是手机号
-        query_set = models.User.objects.filter(mobile_phone=username_or_mobile)
-    else:
-        query_set = models.User.objects.filter(username=username_or_mobile)
+    query_set = search_user_name(username_or_mobile)
 
     # 判空
     if not query_set:
@@ -198,7 +193,7 @@ def reset_password_email(request):
         return JsonResponse(data)
 
     # 非空
-    email = query_set.first().email
+    email = query_set.email
     # print(email)
     state_code, code = send_sms_code(target_email=email)
     if not state_code:  # 发送失败
