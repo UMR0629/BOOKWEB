@@ -57,3 +57,38 @@ class Users:
             "my_love_author": self.my_love_author,
             "maxim": self.maxim,
         }
+
+class Books:
+    def __init__(self, id, title, author='未知', average_rating=0, total_numbers=0):
+        """
+        书籍类，表示书籍表的一个实例。
+
+        :param book_id: 书籍ID
+        :param title: 书籍名称
+        :param author: 作者，默认值为'未知'
+        :param average_rating: 平均评分，默认值为0
+        :param total_numbers: 总评分人数，默认值为0
+        """
+        self.id = id
+        self.title = title
+        self.author = author
+        self.average_rating = average_rating
+        self.total_numbers = total_numbers
+
+    # def __str__(self):
+    #     return (f"Book(book_id={self.book_id}, title='{self.book_name}', author='{self.author}', "
+    #             f"average_rating={self.average_rating}, "
+    #             f"total_rating_count={self.total_numbers})")
+    #
+    # def to_dict(self):
+    #     """
+    #     将书籍对象转换为字典表示。
+    #     """
+    #     return {
+    #         "book_id": self.book_id,
+    #         "title": self.title,
+    #         "author": self.author,
+    #         "average_rating": self.average_rating,
+    #         "total_rating_count": self.total_numbers,
+    #     }
+

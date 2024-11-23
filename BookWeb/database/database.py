@@ -1,4 +1,4 @@
-from .function_class import Users
+from .function_class import *
 import pymysql
 
 
@@ -15,7 +15,7 @@ def create_connection():
     return conn
 
 
-# 创建用户 输入用户名 返回user_id 用户名已存在返回None
+# 创建用户，输入用户名，返回user_id，用户名已存在返回None
 def create_user(username, password, mobile, email):
     """
     创建用户，如果用户名已存在返回 None，否则返回 user_id。
@@ -33,6 +33,7 @@ def create_user(username, password, mobile, email):
         FROM user
         WHERE username = %s
     """
+
     cur.execute(sql_check, (username,))
     if cur.rowcount > 0:
         # 如果用户名已存在，关闭连接并返回 None
@@ -250,3 +251,103 @@ def change_user_id(id_pre, id_post):
     conn.close()
 
     return if_success
+
+def create_book(title, author, average_rating, total_numbers):
+    """
+    创建用户，如果用户名已存在返回 None，否则返回 user_id。
+
+    :param username: 用户名
+    :return: 用户 ID 或 None
+    """
+    book_id = None
+    conn = create_connection()  # 假设已定义此函数建立数据库连接
+    cur = conn.cursor()
+
+    # 检查用户名是否已存在
+    sql_check = """
+        SELECT title
+        FROM book
+        WHERE title = %s
+    """
+    cur.execute(sql_check, (title,))
+    if cur.rowcount > 0:
+        # 如果用户名已存在，关闭连接并返回 None
+        cur.close()
+        conn.close()
+        return None
+
+    # 插入新用户
+    sql_insert = """
+        INSERT INTO book (title,author,average_rating,total_numbers, image)
+        VALUES (%s, %s, %s, %s, %s)
+    """
+    val = (title, author, average_rating, total_numbers, '')
+    cur.execute(sql_insert, val)
+    conn.commit()
+    user_id = cur.lastrowid  # 获取插入用户的 ID
+
+    # 关闭连接
+    cur.close()
+    conn.close()
+
+    return user_id
+
+
+def get_top_rated_books_sql():
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+        SELECT *
+        FROM book
+        ORDER BY average_rating DESC;
+    """
+    cur.execute(sql)
+    rows = cur.fetchall()
+    book_list = []
+    for row in rows:
+        book_n = Books(row[0], row[1], row[2], row[3], row[4])
+        book_list.append(book_n)
+    # 假设你有一个Book类来存储书籍信息
+    # books = [Book(*row) for row in rows]  # 注意：这里需要调整Book类的初始化方法以匹配数据库中的列
+
+    cur.close()
+    conn.close()
+
+    return book_list
+
+
+def search_book_name(book_name):
+    """
+    搜索书籍信息。
+
+    :param book_name: 书籍名称
+    :return: 书籍对象或 None（如果未找到）
+    """
+    book_id = None
+    conn = create_connection()  # 假设这是您定义的创建数据库连接的函数
+    cur = conn.cursor()
+
+    sql = """           
+        SELECT *
+        FROM book
+        WHERE title LIKE %s
+    """
+    val = book_name
+    cur.execute(sql, val)
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+    rows = cur.fetchall()
+    book_list = []
+    for row in rows:
+        book_n = Books(row[0], row[1], row[2], row[3], row[4])
+        book_list.append(book_n)
+
+    cur.close()
+    conn.close()
+
+    return book_list
+
+
