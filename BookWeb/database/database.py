@@ -1,4 +1,4 @@
-
+from .function_class import User
 import pymysql
 
 
@@ -68,7 +68,43 @@ def create_user(username, password, mobile, email):
 
     return user_id
 
+def search_user(username):
+    user_id = None
+    conn = create_connection()
+    cur = conn.cursor()
 
+    sql = """
+        SELECT *
+        FROM user
+        WHERE username = %s
+    """
+    cur.execute(sql, (username,))
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+
+    if cur.rowcount != 0:
+        res = cur.fetchone()
+        user_id = res[0]
+        username = res[1]
+        password = res[2]
+        mobile = res[3]
+        email = res[4]
+        gender = res[5]
+        edu_ground = res[6]
+        school = res[7]
+        major = res[8]
+        my_love_book = res[9]
+        my_love_author = res[10]
+        maxim = res[11]
+
+        user = User(user_id, username, password, mobile, email, gender, edu_ground, school, major, my_love_book, my_love_author, maxim)
+
+    cur.close()
+    conn.close()
+
+    return user
 # # 创建需求，输入用户id 返回notice_id 未创建成功返回None
 # def create_notice(user_id: int):
 #     id = 0

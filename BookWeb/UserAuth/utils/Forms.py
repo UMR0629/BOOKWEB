@@ -8,6 +8,8 @@ from UserAuth.utils.bootstrapform import BootStrapForm
 
 from UserAuth.utils.validators import is_username_valid
 from UserAuth.utils.encrypt import md5_encrypt
+from database.database import search_user
+
 
 class Register(forms.Form):
     username = forms.CharField(
@@ -147,8 +149,13 @@ class LoginForm(BootStrapForm, forms.ModelForm):
         self.request = request
 
     def clean_password(self):
-        row_obj = models.User.objects.filter(username=self.cleaned_data.get('username')).first()
-        if row_obj and row_obj.password == md5_encrypt(self.cleaned_data['password']):
+        # row_obj = models.User.objects.filter(username=self.cleaned_data.get('username')).first()
+        row_user = search_user(self.cleaned_data.get('username'))
+        # if row_obj and row_obj.password == md5_encrypt(self.cleaned_data['password']):
+        #     return self.cleaned_data['password']
+        # else:
+        #     raise ValidationError("用户名或密码错误")
+        if row_user and row_user.password == md5_encrypt(self.cleaned_data['password']):
             return self.cleaned_data['password']
         else:
             raise ValidationError("用户名或密码错误")
