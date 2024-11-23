@@ -51,7 +51,7 @@ def register(request):
     form.save()
 
     # generate cookie
-    user = search_user(user_name)
+    user = search_user_name(user_name)
     # obj = models.User.objects.filter(username=form.cleaned_data["username"]).first()
     request.session["UserInfo"] = {
         'id': user.id,
@@ -80,7 +80,7 @@ def login(request):
         return render(request, 'UserAuth/UserAuth.html', context=context)
 
     row_obj = models.User.objects.filter(username=form.cleaned_data['username']).first()
-    row_user = search_user(form.cleaned_data['username'])
+    row_user = search_user_name(form.cleaned_data['username'])
     request.session["UserInfo"] = {
         'id': row_user.id,
         'username': row_user.username
@@ -110,6 +110,7 @@ def reset_password(request):
     # 判断输入的是手机号还是用户名
     pattern = r'\d{11}'
     if re.search(pattern=pattern, string=username_or_mobile):  # 是手机号
+
         query_set = models.User.objects.filter(mobile_phone=username_or_mobile)
     else:
         query_set = models.User.objects.filter(username=username_or_mobile)

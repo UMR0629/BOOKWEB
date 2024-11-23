@@ -68,7 +68,7 @@ def create_user(username, password, mobile, email):
 
     return user_id
 
-def search_user(username):
+def search_user_name(username):
     user_id = None
     conn = create_connection()
     cur = conn.cursor()

@@ -8,7 +8,7 @@ from UserAuth.utils.bootstrapform import BootStrapForm
 
 from UserAuth.utils.validators import is_username_valid
 from UserAuth.utils.encrypt import md5_encrypt
-from database.database import search_user
+from database.database import search_user, search_user_name
 
 
 class Register(forms.Form):
@@ -150,7 +150,7 @@ class LoginForm(BootStrapForm, forms.ModelForm):
 
     def clean_password(self):
         # row_obj = models.User.objects.filter(username=self.cleaned_data.get('username')).first()
-        row_user = search_user(self.cleaned_data.get('username'))
+        row_user = search_user_name(self.cleaned_data.get('username'))
         # if row_obj and row_obj.password == md5_encrypt(self.cleaned_data['password']):
         #     return self.cleaned_data['password']
         # else:
