@@ -1,3 +1,3 @@
-from BOOKWEB.database.database import create_user
+from database import create_user
 
-create_user("cyf")
+create_user("cyf001")

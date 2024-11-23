@@ -1,4 +1,4 @@
-from function_class import *
+
 import pymysql
 
 
@@ -16,7 +16,7 @@ def create_connection():
 
 
 # 创建用户 输入用户名 返回user_id 用户名已存在返回None
-def create_user(username):
+def create_user(username, password, mobile, email):
     """
     创建用户，如果用户名已存在返回 None，否则返回 user_id。
 
@@ -47,16 +47,16 @@ def create_user(username):
     """
     default_values = (
         username,                # 用户名
-        "default_password",      # 默认密码
-        "13800000000",           # 默认手机号
-        f"{username}@example.com",  # 默认邮箱
+        password,      # 默认密码
+        mobile,           # 默认手机号
+        email,  # 默认邮箱
         1,                       # 默认性别
-        "",                      # 默认学历
-        "",                      # 默认学校
-        "",                      # 默认专业
-        "",                      # 默认最喜爱的书籍
-        "",                      # 默认最喜爱的作者
-        ""                       # 默认格言
+        "unknown",               # 默认学历
+        "unknown",               # 默认学校
+        "unknown",               # 默认专业
+        "unknown",               # 默认最喜爱的书籍
+        "unknown",               # 默认最喜爱的作者
+        "unknown"                # 默认格言
     )
     cur.execute(sql_insert, default_values)
     conn.commit()

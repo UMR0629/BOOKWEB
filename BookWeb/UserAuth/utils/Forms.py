@@ -9,6 +9,38 @@ from UserAuth.utils.bootstrapform import BootStrapForm
 from UserAuth.utils.validators import is_username_valid
 from UserAuth.utils.encrypt import md5_encrypt
 
+class Register(forms.Form):
+    username = forms.CharField(
+        label="用户名",
+        max_length=64,
+        validators=[RegexValidator(r'^[A-Za-z0-9]+$', '用户名不允许存在特殊字符')]
+    )
+    password = forms.CharField(
+        label="密码",
+        max_length=64,
+        widget=forms.PasswordInput(attrs={'placeholder': "6-16位密码，不得包含特殊字符，不得为纯数字"}, render_value=True)
+    )
+    check_password = forms.CharField(
+        label="确认密码",
+        max_length=64,
+        widget=forms.PasswordInput(attrs={'placeholder': '确认密码'}, render_value=True)
+    )
+    mobile_phone = forms.CharField(
+        label="手机号",
+        max_length=32,
+        validators=[RegexValidator(r'^(1[3|4|5|6|7|8|9])\d{9}$', '手机号格式错误')]
+    )
+    email = forms.CharField(
+        label="邮箱",
+        max_length=32,
+        validators=[RegexValidator(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', '邮箱格式错误')]
+    )
+    verification_code = forms.CharField(
+        label="验证码",
+        max_length=10
+    )
+
+
 
 class RegisterForm(BootStrapForm, forms.ModelForm):
     password = forms.CharField(

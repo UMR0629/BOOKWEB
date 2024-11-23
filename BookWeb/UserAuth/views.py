@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from UserAuth.utils.Forms import RegisterForm, LoginForm, ResetPasswordForm
+from UserAuth.utils.Forms import Register
 
 from UserAuth import models
 
@@ -13,6 +14,7 @@ from UserAuth.utils.generateCode import check_code, send_sms_code
 from UserAuth.utils.validators import is_valid_email
 from UserAuth.utils.encrypt import md5_encrypt
 
+from database.database import *
 # Create your views here.
 """视图页面开始"""
 
@@ -27,7 +29,16 @@ def register(request):
         return render(request, 'UserAuth/UserAuth.html', context=context)
 
     # if method is post
-    form = RegisterForm(data=request.POST, request=request)
+
+    form = Register(request.POST)
+    if form.is_valid():
+        user_name = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        password = md5_encrypt(password)
+        mobile_phone = form.cleaned_data['mobile_phone']
+        email = form.cleaned_data['email']
+        create_user(user_name, password, mobile_phone, email)
+
     if not form.is_valid():
         context = {
             'form': form,
@@ -36,9 +47,9 @@ def register(request):
         return render(request, 'UserAuth/UserAuth.html', context=context)
 
     # store userinfo
-    form.instance.identity = 1  # default: User
-    form.instance.password = md5_encrypt(form.instance.password)
-    form.save()
+    # form.instance.identity = 1  # default: User
+    # form.instance.password = md5_encrypt(form.instance.password)
+    # form.save()
 
     # generate cookie
     obj = models.User.objects.filter(username=form.cleaned_data["username"]).first()
@@ -48,6 +59,37 @@ def register(request):
     }
     request.session.set_expiry(60 * 60 * 24 * 7)  # 7天免登录
     return redirect("/")
+
+    # if request.method == 'GET':
+    #     form = RegisterForm(request=request)
+    #     context = {
+    #         'form': form,
+    #         'nid': 1  # represent registration
+    #     }
+    #     return render(request, 'UserAuth/UserAuth.html', context=context)
+    #
+    # # if method is post
+    # form = RegisterForm(data=request.POST, request=request)
+    # if not form.is_valid():
+    #     context = {
+    #         'form': form,
+    #         'nid': 1
+    #     }
+    #     return render(request, 'UserAuth/UserAuth.html', context=context)
+    #
+    # # store userinfo
+    # form.instance.identity = 1  # default: User
+    # form.instance.password = md5_encrypt(form.instance.password)
+    # form.save()
+    #
+    # # generate cookie
+    # obj = models.User.objects.filter(username=form.cleaned_data["username"]).first()
+    # request.session["UserInfo"] = {
+    #     'id': obj.id,
+    #     'username': obj.username
+    # }
+    # request.session.set_expiry(60 * 60 * 24 * 7)  # 7天免登录
+    # return redirect("/")
 
 
 def login(request):
