@@ -92,3 +92,52 @@ class Books:
     #         "total_rating_count": self.total_numbers,
     #     }
 
+class Topics:
+    def __init__(self, id, subject,update_time,views):
+        """
+        书籍类，表示书籍表的一个实例。
+
+        :param book_id: 书籍ID
+        :param title: 书籍名称
+        :param author: 作者，默认值为'未知'
+        :param average_rating: 平均评分，默认值为0
+        :param total_numbers: 总评分人数，默认值为0
+        """
+        self.id = id
+        self.subject = subject
+        self.update_time = update_time
+        self.views = views
+
+class Posts:
+    def __init__(self, id, message,topic_id,create_time,stater):
+        """
+        书籍类，表示书籍表的一个实例。
+
+        :param book_id: 书籍ID
+        :param title: 书籍名称
+        :param author: 作者，默认值为'未知'
+        :param average_rating: 平均评分，默认值为0
+        :param total_numbers: 总评分人数，默认值为0
+        """
+        self.id = id
+        self.message = message
+        self.topic_id = topic_id
+        self.created_at = create_time
+        self.stater = stater
+
+class Reviews:
+    def __init__(self, id, book_id,rating,comment,commenter):
+        """
+        书籍类，表示书籍表的一个实例。
+
+        :param book_id: 书籍ID
+        :param title: 书籍名称
+        :param author: 作者，默认值为'未知'
+        :param average_rating: 平均评分，默认值为0
+        :param total_numbers: 总评分人数，默认值为0
+        """
+        self.id = id
+        self.book_id = book_id
+        self.rating = rating
+        self.comment = comment
+        self.commenter = commenter

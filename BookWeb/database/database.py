@@ -2,6 +2,7 @@ from .function_class import *
 import pymysql
 
 
+
 # 创建python和MySQL连接
 def create_connection():
     conn = pymysql.connect(
@@ -350,4 +351,225 @@ def search_book_name(book_name):
 
     return book_list
 
+def create_topic(subject, message, starter):
+    """
+    创建主题，如果主题插入成功返回 topic_id，否则返回 None。
 
+    :param subject: 主题名称
+    :param message: 主题内容
+    :param starter: 发起者的用户 ID
+    :return: 主题 ID 或 None
+    """
+    topic_id = None
+    conn = create_connection()  # 假设已定义此函数建立数据库连接
+    cur = conn.cursor()
+
+    try:
+        # 插入新主题
+        sql_insert = """
+            INSERT INTO topic (subject, last_updated, starter_id, views)
+            VALUES (%s, NOW(), %s, 0)
+        """
+        cur.execute(sql_insert, (subject, starter))
+        conn.commit()
+        topic_id = cur.lastrowid  # 获取插入主题的 ID
+
+        # 插入主题内容到另一个表 (假设有 message 表)
+        sql_message_insert = """
+            INSERT INTO message (topic_id, content, created_at, created_by)
+            VALUES (%s, %s, NOW(), %s)
+        """
+        cur.execute(sql_message_insert, (topic_id, message, starter))
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()  # 出现异常时回滚事务
+        print(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return topic_id
+
+def get_top_topics():
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+        SELECT *
+        FROM topic
+        ORDER BY average_rating DESC;
+    """
+    cur.execute(sql)
+    rows = cur.fetchall()
+    topic_list = []
+    for row in rows:
+        topic_n = Topics(row[0], row[1], row[2], row[3])
+        topic_list.append(topic_n)
+    # 假设你有一个Book类来存储书籍信息
+    # books = [Book(*row) for row in rows]  # 注意：这里需要调整Book类的初始化方法以匹配数据库中的列
+
+    cur.close()
+    conn.close()
+
+    return topic_list
+
+def search_topic_name(topic_name):
+    """
+    搜索话题信息。
+
+    :param book_name: 话题主题
+    :return: 具体的话题或者空
+    """
+    topic_id = None
+    conn = create_connection()  # 假设这是您定义的创建数据库连接的函数
+    cur = conn.cursor()
+
+    sql = """           
+        SELECT *
+        FROM topic
+        WHERE subject LIKE %s
+    """
+    val = topic_name
+    cur.execute(sql, val)
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+    rows = cur.fetchall()
+    topic_list = []
+    for row in rows:
+        topic_n = Topics(row[0], row[1], row[2], row[3])
+        topic_list.append(topic_n)
+
+    cur.close()
+    conn.close()
+
+    return topic_list
+
+def create_post(topic_id, message, starter):
+    """
+    创建帖子，如果插入成功返回 post_id，否则返回 None。
+
+    :param topic_id: 关联的主题 ID
+    :param message: 帖子内容
+    :param starter: 发帖用户 ID
+    :return: 帖子 ID 或 None
+    """
+    post_id = None
+    conn = create_connection()  # 假设已定义此函数建立数据库连接
+    cur = conn.cursor()
+
+    try:
+        # 插入新帖子
+        sql_insert = """
+            INSERT INTO post_table (message, topic_id, created_at,created_by_id)
+            VALUES (%s, %s, NOW(), %s)
+        """
+        cur.execute(sql_insert, (message, topic_id, starter))
+        conn.commit()
+        post_id = cur.lastrowid  # 获取插入帖子的 ID
+    except Exception as e:
+        conn.rollback()  # 出现异常时回滚事务
+        print(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return post_id
+
+
+def search_topic_post(topic_id):
+    """
+    搜索某个话题的回帖信息。
+
+    :param topic_id: 对应话题的id
+    :return: 具体的话题或者空
+    """
+    post_id = None
+    conn = create_connection()  # 假设这是您定义的创建数据库连接的函数
+    cur = conn.cursor()
+
+    sql = """           
+        SELECT *
+        FROM post_table
+        WHERE topic_id LIKE %s
+    """
+    val = topic_id
+    cur.execute(sql, val)
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+    rows = cur.fetchall()
+    post_list = []
+    for row in rows:
+        post_n = Posts(row[0], row[1], row[2], row[3],row[5])
+        post_list.append(post_n)
+    cur.close()
+    conn.close()
+
+    return post_list
+
+
+def create_comment(book_id, rating,comment,commenter ):
+    """
+    创建评论
+
+    :param book_id: 对应书籍的id
+    :param rating: 评分分数
+    :param comment: 评价内容
+    :param commenter: 发帖用户 ID
+    """
+    review_id = None
+    conn = create_connection()  # 假设已定义此函数建立数据库连接
+    cur = conn.cursor()
+
+    try:
+        # 插入新帖子
+        sql_insert = """
+            INSERT INTO review (book_id, rating, comment，commenter，)
+            VALUES (%s, %s,%s, %s)
+        """
+        cur.execute(sql_insert, (book_id, rating, comment,commenter))
+        conn.commit()
+        review_id = cur.lastrowid
+    except Exception as e:
+        conn.rollback()  # 出现异常时回滚事务
+        print(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return review_id
+
+def search_book_review(book_id):
+    """
+    搜索某本书籍的评价信息。
+
+    :param book_id: 对应书本的id
+    """
+    review_id = None
+    conn = create_connection()  # 假设这是您定义的创建数据库连接的函数
+    cur = conn.cursor()
+
+    sql = """           
+        SELECT *
+        FROM review
+        WHERE book_id LIKE %s
+    """
+    val = book_id
+    cur.execute(sql, val)
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+    rows = cur.fetchall()
+    review_list = []
+    for row in rows:
+        review_n = Posts(row[0], row[1], row[2], row[3],row[4])
+        review_list.append(review_n)
+    cur.close()
+    conn.close()
+
+    return review_list

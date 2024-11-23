@@ -51,17 +51,5 @@ CREATE TABLE topic (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='主题表';
 
 -- 创建帖子表
-CREATE TABLE post_table (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT NOT NULL COMMENT '消息内容',
-    topic_id INT NOT NULL COMMENT '关联主题',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME NULL COMMENT '更新时间',
-    created_by_id INT NOT NULL COMMENT '创建者',
-    updated_by_id INT NULL COMMENT '更新者',
-    FOREIGN KEY (topic_id) REFERENCES topic(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (updated_by_id) REFERENCES user(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子表';
 
 
