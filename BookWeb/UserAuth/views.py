@@ -86,8 +86,14 @@ def login(request):
         }
         return render(request, 'UserAuth/UserAuth.html', context=context)
 
-    row_obj = models.User.objects.filter(username=form.cleaned_data['username']).first()
+    # row_obj = models.User.objects.filter(username=form.cleaned_data['username']).first()
+    # 通过username检索，获得某一个user元组的内容
     row_user = search_user_name(form.cleaned_data['username'])
+    # request.session["UserInfo"] = {
+    #     'id': row_obj.id,
+    #     'username': row_obj.username
+    # }
+    # 传递userid和username
     request.session["UserInfo"] = {
         'id': row_user.id,
         'username': row_user.username
