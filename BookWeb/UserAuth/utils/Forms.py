@@ -99,8 +99,8 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
         return self.cleaned_data['mobile_phone']
 
     def clean_email(self):
-        if models.User.objects.filter(email=self.cleaned_data["email"]).exists():
-            raise ValidationError("邮箱已存在")
+        # if models.User.objects.filter(email=self.cleaned_data["email"]).exists():
+        #     raise ValidationError("邮箱已存在")
         return self.cleaned_data['email']
 
     def clean_check_password(self):
