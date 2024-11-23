@@ -1,4 +1,4 @@
-class User:
+class Users:
     def __init__(self, id, username, password, mobile_phone, email, gender=1,
                  edu_ground='', school='', major='', my_love_book='',
                  my_love_author='', maxim=''):

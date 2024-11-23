@@ -44,11 +44,18 @@ def register(request):
     password = md5_encrypt(password)
     mobile_phone = form.clean_mobile_phone()
     email = form.clean_email()
-    create_user(user_name, password, mobile_phone, email)
+    id = create_user(user_name, password, mobile_phone, email)
 
     form.instance.identity = 1  # default: User
     form.instance.password = md5_encrypt(form.instance.password)
     form.save()
+
+    row_obj = models.User.objects.filter(username=form.cleaned_data['username']).first()
+    user = search_user_id(id)
+    print(row_obj.id)
+    change_user_id(user.id, row_obj.id)
+
+
 
     # generate cookie
     user = search_user_name(user_name)
@@ -111,10 +118,10 @@ def reset_password(request):
     pattern = r'\d{11}'
     if re.search(pattern=pattern, string=username_or_mobile):  # 是手机号
         query_set =search_user_mobile(username_or_mobile)
-        # query_set = models.User.objects.filter(mobile_phone=username_or_mobile)
+        query_set_d = models.User.objects.filter(mobile_phone=username_or_mobile)
     else:
         query_set = search_user_name(username_or_mobile)
-        # query_set = models.User.objects.filter(username=username_or_mobile)
+        query_set_d = models.User.objects.filter(username=username_or_mobile)
 
     # 能到这里一般不会为空了，但为了确保程序健壮性，依然判空
     if not query_set:
@@ -123,7 +130,7 @@ def reset_password(request):
     # 重置密码
     query_set.password = md5_encrypt(form.cleaned_data['password'])
     change_user(query_set)
-    # query_set.update(password=form.cleaned_data['password'])
+    query_set_d.update(password=form.cleaned_data['password'])
     return render(request, "UserAuth/alert_page.html", context={'msg': "您的密码已被重置！", 'success': True})
 
 

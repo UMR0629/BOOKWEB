@@ -15,6 +15,7 @@ from UserAuth.models import User
 from Usercomments.models import Book,Review
 
 from UserInfo.models import Resume
+from database.database import search_user_id, change_user
 
 
 # Create your views here.
@@ -24,9 +25,9 @@ def index(request, pk):
 
     # 查询并返回数据
     query_set = User.objects.filter(id=pk)
+    # query_set = search_user_id(pk)
     # 获取用户数据
     obj = query_set.first()
-
     topic_per_page = 5
     topic = obj.topics.order_by('last_updated')
     topic_paginator = Paginator(topic, topic_per_page)
@@ -307,11 +308,19 @@ def info(request):
         # 查询并返回数据
         query_set = User.objects.filter(id=request.session["UserInfo"].get("id"))
         # 获取用户数据
-        obj = query_set.first()
+        # obj = query_set.first()
+        obj = search_user_id(request.session["UserInfo"].get("id"))
+        gender = "unknown"
+        if obj.gender == 1:
+            gender = "不愿透露"
+        elif obj.gender == 2:
+            gender = "男"
+        elif obj.gender == 3:
+            gender = "女"
         user_info = {"id": request.session['UserInfo'].get("id"),
                      "username": obj.username,
                      "mobile_phone": obj.mobile_phone,
-                     "gender": obj.get_gender_display(),
+                     "gender": gender,#get_gender_display(),
                      "email": obj.email,
                      "edu_ground": obj.edu_ground,
                      "school": obj.school,
@@ -328,6 +337,7 @@ def info(request):
               'edu_ground', 'school', 'major', 'my_love_book', 'my_love_author','maxim']
     # 获取当前用户数据行
     query_set = User.objects.filter(id=request.session['UserInfo'].get("id"))
+    obj_database = search_user_id(request.session['UserInfo'].get("id"))
     # 正常来说根据id查表应该查询出唯一的用户，这里作检查
     if len(query_set) != 1:
         return HttpResponse("不合法的身份")
@@ -337,6 +347,18 @@ def info(request):
     for field in fields:
         # print('field: ', data.get(field))
         setattr(obj, field, data.get(field))
+    obj_database.username = obj.username
+    obj_database.mobile_phone = obj.mobile_phone
+    obj_database.gender = obj.gender
+    obj_database.email = obj.email
+    obj_database.edu_ground = obj.edu_ground
+    obj_database.school = obj.school
+    obj_database.major = obj.major
+    obj_database.my_love_book = obj.my_love_book
+    obj_database.my_love_author = obj.my_love_author
+    obj_database.maxim = obj.maxim
+    change_user(obj_database)
+
     obj.save()
     # print('obj.school: ', obj.school)
     user_info = {"id": request.session['UserInfo'].get("id"),
