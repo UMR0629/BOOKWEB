@@ -110,17 +110,20 @@ def reset_password(request):
     # 判断输入的是手机号还是用户名
     pattern = r'\d{11}'
     if re.search(pattern=pattern, string=username_or_mobile):  # 是手机号
-
-        query_set = models.User.objects.filter(mobile_phone=username_or_mobile)
+        query_set =search_user_mobile(username_or_mobile)
+        # query_set = models.User.objects.filter(mobile_phone=username_or_mobile)
     else:
-        query_set = models.User.objects.filter(username=username_or_mobile)
+        query_set = search_user_name(username_or_mobile)
+        # query_set = models.User.objects.filter(username=username_or_mobile)
 
     # 能到这里一般不会为空了，但为了确保程序健壮性，依然判空
     if not query_set:
         return render(request, "UserAuth/alert_page.html", {'msg': '错误的用户信息'})
 
     # 重置密码
-    query_set.update(password=form.cleaned_data['password'])
+    query_set.password = md5_encrypt(form.cleaned_data['password'])
+    change_user(query_set)
+    # query_set.update(password=form.cleaned_data['password'])
     return render(request, "UserAuth/alert_page.html", context={'msg': "您的密码已被重置！", 'success': True})
 
 

@@ -8,7 +8,7 @@ from UserAuth.utils.bootstrapform import BootStrapForm
 
 from UserAuth.utils.validators import is_username_valid
 from UserAuth.utils.encrypt import md5_encrypt
-from database.database import search_user, search_user_name
+from database.database import *
 
 
 class Register(forms.Form):

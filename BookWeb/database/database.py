@@ -78,11 +78,14 @@ def search_user_name(username):
         FROM user
         WHERE username = %s
     """
-    cur.execute(sql, (username,))
+    val = username
+    cur.execute(sql, val)
     if cur.rowcount == 0:
         cur.close()
         conn.close()
         return None
+
+    user = None
 
     if cur.rowcount != 0:
         res = cur.fetchone()
@@ -105,6 +108,86 @@ def search_user_name(username):
     conn.close()
 
     return user
+
+def search_user_mobile(mobile_phone):
+    user_id = None
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+        SELECT *
+        FROM user
+        WHERE mobile_phone = %s
+    """
+    val = mobile_phone
+    cur.execute(sql, val)
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return None
+
+    user = None
+
+    if cur.rowcount != 0:
+        res = cur.fetchone()
+        user_id = res[0]
+        username = res[1]
+        password = res[2]
+        mobile = res[3]
+        email = res[4]
+        gender = res[5]
+        edu_ground = res[6]
+        school = res[7]
+        major = res[8]
+        my_love_book = res[9]
+        my_love_author = res[10]
+        maxim = res[11]
+
+        user = User(user_id, username, password, mobile, email, gender, edu_ground, school, major, my_love_book, my_love_author, maxim)
+
+    cur.close()
+    conn.close()
+
+    return user
+
+def change_user(user: User):
+    if_success = False
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+        UPDATE user
+        SET username = (%s), password = (%s), mobile_phone = (%s), email = (%s), gender = (%s), edu_ground = (%s), school = (%s), major = (%s), my_love_book = (%s), my_love_author = (%s), maxim = (%s)
+        WHERE id = (%s);
+    """
+    val = (
+        user.username,
+        user.password,
+        user.mobile_phone,
+        user.email,
+        user.gender,
+        user.edu_ground,
+        user.school,
+        user.major,
+        user.my_love_book,
+        user.my_love_author,
+        user.maxim,
+        user.id,
+    )
+    rtn = cur.execute(sql, val)
+    conn.commit()
+
+    if cur.rowcount:
+        if_success = True
+
+    cur.close()
+    conn.close()
+
+    return if_success
+
+
+
+
 # # 创建需求，输入用户id 返回notice_id 未创建成功返回None
 # def create_notice(user_id: int):
 #     id = 0
